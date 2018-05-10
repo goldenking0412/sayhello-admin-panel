@@ -21,7 +21,8 @@
     "@vue/cli-service": "^3.0.0-beta.9",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.13"
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^4.8.1"
   },
   "babel": {
     "presets": [

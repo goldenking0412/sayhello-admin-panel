@@ -13,3 +13,7 @@
     mixins: [currentUser]
   }
 </script>
+
+<style lang="scss">
+  @import './assets/stylesheets/style'
+</style>

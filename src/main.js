@@ -12,8 +12,6 @@ import adminRoutes from './admin/router'
 
 import ENV from './env'
 
-import './assets/stylesheets/style.scss'
-
 axios.defaults.baseURL = ENV.BASE_URL
 
 axios.defaults.headers['Authorization'] = 'Bearer ' + localStorage.getItem('access_token')
