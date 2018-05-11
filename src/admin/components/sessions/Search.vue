@@ -11,14 +11,15 @@
       <div class="col-lg-2">
         <div class="form-group">
           <label>Evaluator</label>
-          <select class="form-control" v-model="search.evaluator_id">
-          </select>
+          <input type="text" class="form-control" v-model="search.evaluator_id">
         </div>
       </div>
       <div class="col-lg-2">
         <div class="form-group">
           <label>Prechecked status</label>
           <select class="form-control" v-model="search.prechecked_status">
+            <option value="1">Approved</option>
+            <option value="0">Disapproved</option>
           </select>
         </div>
       </div>
@@ -26,6 +27,8 @@
         <div class="form-group">
           <label>Evaluated</label>
           <select class="form-control" v-model="search.evaluated">
+            <option value="1">Evaluated</option>
+            <option value="0">Not yet</option>
           </select>
         </div>
       </div>
@@ -33,6 +36,9 @@
         <div class="form-group">
           <label>Level</label>
           <select class="form-control" v-model="search.level">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </select>
         </div>
       </div>
@@ -40,6 +46,8 @@
         <div class="form-group">
           <label>Wants more</label>
           <select class="form-control" v-model="search.wants_more">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
           </select>
         </div>
       </div>
@@ -47,6 +55,8 @@
         <div class="form-group">
           <label>Notified evaluation</label>
           <select class="form-control" v-model="search.notified_evaluation">
+            <option value="1">Sent</option>
+            <option value="0">Not sent</option>
           </select>
         </div>
       </div>
@@ -54,8 +64,8 @@
         <div class="form-group">
           <label>Played till end</label>
           <select class="form-control" v-model="search.played_till_end">
-            <option value="0">0</option>
-            <option value="">More than 1</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
           </select>
         </div>
       </div>
@@ -63,8 +73,8 @@
         <div class="form-group">
           <label>Played evaluation</label>
           <select class="form-control" v-model="search.played_evaluation">
-            <option value="0">0</option>
-            <option value="">More than 1</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
           </select>
         </div>
       </div>
@@ -72,6 +82,8 @@
         <div class="form-group">
           <label>Visited evaluation</label>
           <select class="form-control" v-model="search.visited_evaluation">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
           </select>
         </div>
       </div>
@@ -89,6 +101,16 @@
         <div class="form-group">
           <label>Page</label>
           <input type="number" class="form-control" v-model="search.page" min="0">
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="form-group">
+          <label style="width: 100%">Created at</label>
+          <date-picker v-model="search.created_at" lang="en" range
+            type="datetime" :time-picker-options="{start: '00:00',step: '00:30',end: '23:30'}"
+            format="yyyy-MM-dd  hh:mm:ss"
+            >
+          </date-picker>
         </div>
       </div>
       <div class="col-lg-12">
@@ -129,7 +151,12 @@
   </div>
 </template>
 <script>
+  import DatePicker from 'vue2-datepicker'
+
   export default {
+    components: {
+      DatePicker
+    },
     data() {
       return {
         sessions: [],
