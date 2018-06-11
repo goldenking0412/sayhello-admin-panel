@@ -29,7 +29,7 @@
     },
     methods: {
       login() {
-        this.axios.post('/login', this.user)
+        this.axios.post('v3/login', this.user)
           .then((res) => {
             this.axios.defaults.headers['Authorization'] = 'Bearer ' +  res.data.access_token
             localStorage.setItem('access_token', res.data.access_token)

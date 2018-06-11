@@ -5,7 +5,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse">
+    <div class="">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
           <router-link class="nav-link" :to="{name: 'sessions.searches'}">Sessions search</router-link>

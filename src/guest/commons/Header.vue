@@ -5,7 +5,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse">
+    <div class="">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active" v-if="currentUser">
           <router-link class="nav-link" to="/admin">Admin</router-link>

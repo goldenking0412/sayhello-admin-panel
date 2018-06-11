@@ -1,5 +1,5 @@
 const ENV = {
-    BASE_URL: 'http://api-staging.sb.sayhello.lk/api/v3'
+    BASE_URL: 'https://sayhello-api.sb.cyrupdev.net/api/'
 }
 
 export default ENV

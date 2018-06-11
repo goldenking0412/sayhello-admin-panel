@@ -9,8 +9,12 @@ import middleware from './middleware'
 import App from './App.vue'
 import guestRoutes from './guest/router'
 import adminRoutes from './admin/router'
+import lodash from 'lodash'
 
 import ENV from './env'
+
+
+Object.defineProperty(Vue.prototype, '$lodash', { value: lodash });
 
 axios.defaults.baseURL = ENV.BASE_URL
 
