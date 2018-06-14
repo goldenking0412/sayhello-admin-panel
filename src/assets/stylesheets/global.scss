@@ -10,6 +10,10 @@ body {
         color: #515151;
         text-transform: uppercase;
     }
+    @media screen and (max-width: 600px) {
+        max-width: 90% !important;
+        left: 5% !important;
+    }
 }
 
 .loginModal {

@@ -7,7 +7,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active" v-if="currentUser">
+        <li class="nav-item active" v-if="currentUser && currentUser.role == 'Admin'">
           <router-link class="nav-link" to="/admin">Admin</router-link>
         </li>
       </ul>
