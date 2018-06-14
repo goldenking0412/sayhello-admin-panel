@@ -4,6 +4,9 @@ let data = {
     },
     'Criteria.RatingScale.YesNo': {
         attribute: "condition_met"
+    },
+    'Criteria.RatingScale.MultipleChoice': {
+        attribute: "choice"
     }
 };
 

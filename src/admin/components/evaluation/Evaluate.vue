@@ -24,6 +24,10 @@
                     <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
                         <yes-no v-model="blockEvaluateObj.condition_met"></yes-no>
                     </div>
+
+                    <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
+                        <multiple-choice v-model="blockEvaluateObj.choice" :choices="blockEvaluateObj.evaluation_config.choices"></multiple-choice>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,26 +43,46 @@
             <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
                 <yes-no v-model="evaluateObj.condition_met"></yes-no>
             </div>
+
+            <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
+                <multiple-choice v-model="evaluateObj.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
+            </div>
         </div>
         <hr>
         <div style="width:100px;margin:auto;height:120px;">
-            <div class="recording-indicator-wrapper">
+            <div class="recording-indicator-wrapper" v-if="isRecording">
                 <div v-bind:style="{ transform: `scale(${audioPulse})`}" class="h5p-audio-recorder-vu-meter"></div>
             </div>
         </div>
+        
+        <div class="card" v-if="hasGeneralFeedback">
+            <div class="card-body">
+                <div class="text-center">
+                    <button class="btn btn-success" v-if="!isRecording" @click="startRecording()">Start Recording</button>
+                    <button class="btn btn-danger" v-if="isRecording" @click="stopRecording()">Stop Recording</button>
+                    <button class="btn btn-warning" v-if="recordedAudio && !isRecording" @click="playRecorded()">Play Recorded</button>
+                </div>
 
-        <button class="btn btn-success" @click="startRecording()">Start Recording</button>
-        <button class="btn btn-danger" @click="stopRecording()">Stop Recording</button>
-        <button class="btn btn-warning" @click="playRecorded()">Play Recorded</button>
+                <hr>
+                <label>Notes on this student</label>
+                <p class="text-muted">Share your thoughts on the student and reasoning behind your evaluation</p>
+                <textarea v-model="generalFeedback.feedback_notes" cols="30" rows="3" class="form-control"></textarea>
+
+                <label>Suggestions to improve their spoken english</label>
+                <textarea v-model="generalFeedback.feedback_suggestions" cols="30" rows="3" class="form-control"></textarea>
+            </div>
+        </div>
         <hr>
         <button class="btn btn-primary" @click="submit()">Submit</button>
+
     </div>
 </template>
 <script>
 
 
-import Howler from 'howler'
+import {Howl, Howler} from 'howler'
 import YesNo from './RatingScale/YesNo'
+import MultipleChoice from './RatingScale/MultipleChoice'
 import StarRating from 'vue-star-rating'
 import AudioRecorder from './helpers/AudioRecorder'
 import {getRatingScaleData} from './helpers/RatingScalesHelper'
@@ -75,7 +99,10 @@ export default {
             recorder: false,
             audioPulse: 0,
             recordedAudio: false,
-            pulseQuery: false
+            pulseQuery: false,
+            hasGeneralFeedback: false,
+            isRecording: false,
+            generalFeedback: {feedback_notes:"", feedback_suggestions:""}
         }
     },
     created() {
@@ -84,12 +111,21 @@ export default {
             .then((res) => {
                 this.evaluation = res.data;
                 this.learningObjectives = this.evaluation.lesson.evaluatable_objectives;
+
+                this.learningObjectives.forEach((obj) => {
+                    //TODO: hardcoding the logic
+                    if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
+                        this.hasGeneralFeedback = true;
+                    }
+                });
+
             }, () => {
 
             });
     },
     components: {
       StarRating,
+      MultipleChoice,
       'yes-no': YesNo
     },
     methods: {
@@ -111,23 +147,32 @@ export default {
                 this.activeAudio.stop();
             this.activeAudioIndex = false;
         },
-        setOneFiveRating(index, rating) {
-            this.evaluation.lesson.evaluatable_objectives[index].rating = rating;
-            console.log(this.evaluation.lesson.evaluatable_objectives[index]);
-        },
         submit() {
+
             let payload = {
                 lesson_evaluations: [],
                 block_evaluations: []
             };
 
             this.learningObjectives.forEach((lo) => {
+
                 let ratingScaleData = getRatingScaleData(lo, lo.rating_scale);
 
                 if (ratingScaleData !== false) {
                     payload.lesson_evaluations.push({
-                        id: lo.id,
+                        objective_id: lo.objective_id,
                         data: ratingScaleData
+                    });
+                }
+
+                if (lo.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
+                    payload.lesson_evaluations.push({
+                        objective_id: lo.objective_id,
+                        data: {
+                            "audio" : this.recordedAudio.data,
+                            "feedback_notes" : this.generalFeedback.feedback_notes,
+                            "feedback_suggestions" : this.generalFeedback.feedback_suggestions
+                        }
                     });
                 }
             });
@@ -138,16 +183,27 @@ export default {
 
                     if (ratingScaleData !== false) {
                         payload.block_evaluations.push({
-                            id: block.id,
+                            objective_id: lo.objective_id,
+                            block_id: block.block_id,
+                            response_id: block.response_id,
                             data: ratingScaleData
                         });
                     }
                 });
             });
+            
+            this.axios.post('/v5/students/learning_nodes/' + this.evaluation.session.id + '/evaluate', payload).then(() => {
 
-            console.log(payload);
+            });
         },
         startRecording() {
+
+            if (this.recordedAudio && !confirm("Are you sure about re-recording? previous recording will be removed")) {
+                return false;
+            }
+
+            this.isRecording = true;
+
             this.recorder = new AudioRecorder();
 
             this.recorder.startMic().then(() => {
@@ -163,21 +219,23 @@ export default {
 
         },
         stopRecording() {
-            clearInterval(this.pulseQuery);
+            this.isRecording = false;
             this.recorder.stopRecording().then((data) => {
                 this.recordedAudio = data;
                 this.recorder.destroy();
             });
         },
         playRecorded() {
-            console.log(this.recorder.getOptions().mimeType);
+
             let s = new Howl({
                 src: [this.recordedAudio.url],
                 format: ["wav"]
             });
+
             s.on("end", () => {
                 console.log("done");
             });
+
             s.play();
         }
     }

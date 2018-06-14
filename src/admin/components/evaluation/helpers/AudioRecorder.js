@@ -1,16 +1,23 @@
 import _ from 'lodash';
 import SpeakingPulse from './SpeakingPulse.js'
 import RecordRTC from 'recordrtc'
+let parser = require('ua-parser-js');
+let ua = parser(navigator.userAgent);
 
-const audioOption = {
+let audioOption = {
     type: 'audio',
     mimeType: 'audio/wav',
     bufferSize: 0,
     sampleRate: 44100,
-    leftChannel: true,
+    leftChannel: false,
     disableLogs: false,
     audioStream: false
+    //recorderType: RecordRTC.StereoAudioRecorder,
 };
+
+if ((/Chrome/i.test(ua.browser.name))) {
+    audioOption.mimeType = 'audio/webm';
+}
 
 function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
     if (typeof _.get(navigator, 'mediaDevices.getUserMedia') == "function") {
