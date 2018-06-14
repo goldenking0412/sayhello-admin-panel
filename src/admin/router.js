@@ -1,6 +1,7 @@
 import Admin from './components/Admin.vue'
 import SessionSearch from './components/sessions/Search.vue'
 import Evaluate from './components/evaluation/Evaluate.vue'
+import LearningObjectives from './components/learning/Objectives.vue'
 
 const routes = [{
     path: '/admin',
@@ -15,6 +16,11 @@ const routes = [{
             path: 'sessions/searches',
             name: 'sessions.searches',
             component: SessionSearch
+        },
+        {
+            path: 'learning/objectives',
+            name: 'learning.objectives',
+            component: LearningObjectives
         }
     ],
     meta: {

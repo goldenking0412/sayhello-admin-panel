@@ -1,5 +1,5 @@
 const ENV = {
-    BASE_URL: 'http://sayhello-api.local:8888/api/'
+    BASE_URL: 'http://localhost:8000/api/'
 }
 
 export default ENV
