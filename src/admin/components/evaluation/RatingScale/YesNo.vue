@@ -1,7 +1,13 @@
 <template>
     <div>
-        <div class="btn btn-primary" :class="{nactive:!inputVal}" @click="inputVal = true">Yes</div>&nbsp;
-        <div class="btn btn-warning" :class="{nactive:inputVal}" @click="inputVal = false">No</div>
+        <label>
+            <input type="radio" v-model="inputVal" @click="setValue(true)" :value="true"> Yes
+        </label>
+
+        <label>
+            <input type="radio" v-model="inputVal" @click="setValue(false)" :value="false"> No
+        </label>
+
     </div>
 </template>
 
@@ -14,6 +20,11 @@ export default {
     },
     data() {
         return { inputVal: this.value }
+    },
+    methods: {
+        setValue(val) {
+            this.inputVal = val;
+        }
     },
     watch: {
         inputVal(val) {
