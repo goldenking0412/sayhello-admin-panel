@@ -1,6 +1,7 @@
 import Admin from './components/Admin.vue'
 import SessionSearch from './components/sessions/Search.vue'
 import Evaluate from './components/evaluation/Evaluate.vue'
+import Precheck from './components/evaluation/Precheck.vue'
 import LearningObjectives from './components/learning/Objectives.vue'
 
 const routes = [{
@@ -11,6 +12,11 @@ const routes = [{
             path: 'evaluators/evaluate',
             name: 'evaluation.evaluate',
             component: Evaluate
+        },
+        {
+            path: 'evaluators/precheck',
+            name: 'evaluation.precheck',
+            component: Precheck
         },
         {
             path: 'sessions/searches',
