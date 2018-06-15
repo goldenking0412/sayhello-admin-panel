@@ -19,6 +19,7 @@ export default function middleware (router) {
           }
         })
         .catch((err) => {
+          localStorage.removeItem('access_token')
           next({
             path: '/'
           })
