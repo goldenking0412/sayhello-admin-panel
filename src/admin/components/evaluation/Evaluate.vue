@@ -1,80 +1,88 @@
 <template>
-    <div v-if="evaluation">
-        <h6>Student</h6>
-        <h3>{{ evaluation.session.student.name }}</h3>
-        <h3><small>{{ evaluation.session.student.id }}</small></h3>
-        <hr>
-        <h4>{{ evaluation.lesson.title }}</h4>
-        <p>{{ evaluation.lesson.description.en }}</p>
-        <hr>
-        <div v-for="(block, blockIndex) in evaluation.session.lesson.blocks" class="card">
-            <div class="card-body">
-                <h4>{{ block.question.en }}</h4>
-                <button v-if="activeAudioIndex !== blockIndex" class="btn btn-primary" @click="playAudio(blockIndex)">Play</button>
-                <button v-if="activeAudioIndex === blockIndex" class="btn btn-danger" @click="stopAudio()">Stop</button>
-                <hr>
-                <div
-                    v-for="(blockEvaluateObj, blockEvaluateObjIndex) in block.evaluatable_objectives">
-                    <p>{{ $lodash.get(blockEvaluateObj, 'evaluation_config.question') }}</p>
+    <div>
+        <p class="text-center text-danger" v-if="noEvaluation">
+            No sessions to evaluate
+        </p>
+        <div v-if="evaluation">
+            <h6>Student</h6>
+            <h3>{{ evaluation.session.student.name }}</h3>
+            <h3><small>{{ evaluation.session.student.id }}</small></h3>
+            <hr>
+            <h4>{{ evaluation.lesson.title }}</h4>
+            <p>{{ evaluation.lesson.description.en }}</p>
+            <hr>
+            <div v-for="(block, blockIndex) in evaluation.session.lesson.blocks" class="card">
+                <div class="card-body">
+                    <h4>{{ block.question.en }}</h4>
+                    <button v-if="activeAudioIndex !== blockIndex" class="btn btn-primary" @click="playAudio(blockIndex)">Play</button>
+                    <button v-if="activeAudioIndex === blockIndex" class="btn btn-danger" @click="stopAudio()">Stop</button>
+                    <hr>
+                    <div
+                        v-for="(blockEvaluateObj, blockEvaluateObjIndex) in block.evaluatable_objectives">
+                        <h5 class="text-info">{{ $lodash.get(blockEvaluateObj, 'evaluation_config.question') }}</h5>
 
-                    <div style="margin-bottom: 10px" v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
-                        <star-rating v-model="blockEvaluateObj.rating"></star-rating>
-                    </div>
+                        <div style="margin-bottom: 10px" v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
+                            <star-rating v-model="blockEvaluateObj.rating"></star-rating>
+                        </div>
 
-                    <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                        <yes-no v-model="blockEvaluateObj.condition_met"></yes-no>
-                    </div>
+                        <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
+                            <yes-no v-model="blockEvaluateObj.condition_met"></yes-no>
+                        </div>
 
-                    <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
-                        <multiple-choice v-model="blockEvaluateObj.choice" :choices="blockEvaluateObj.evaluation_config.choices"></multiple-choice>
+                        <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
+                            <multiple-choice v-model="blockEvaluateObj.choice" :choices="blockEvaluateObj.evaluation_config.choices"></multiple-choice>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <hr>
-        <div
-            v-for="(evaluateObj, evaluateObjIndex) in learningObjectives">
-            <p>{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</p>
+            <hr>
+            <h2 class="text-center">Overall Feedback</h2>
+            <div
+                v-for="(evaluateObj, evaluateObjIndex) in learningObjectives">
+                <h5 v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'"class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
+                <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
 
-            <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
-                <star-rating v-model="evaluateObj.rating"></star-rating>
-            </div>
-
-            <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                <yes-no v-model="evaluateObj.condition_met"></yes-no>
-            </div>
-
-            <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
-                <multiple-choice v-model="evaluateObj.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
-            </div>
-        </div>
-        <hr>
-        <div style="width:100px;margin:auto;height:120px;">
-            <div class="recording-indicator-wrapper" v-if="isRecording">
-                <div v-bind:style="{ transform: `scale(${audioPulse})`}" class="h5p-audio-recorder-vu-meter"></div>
-            </div>
-        </div>
-        
-        <div class="card" v-if="hasGeneralFeedback">
-            <div class="card-body">
-                <div class="text-center">
-                    <button class="btn btn-success" v-if="!isRecording" @click="startRecording()">Start Recording</button>
-                    <button class="btn btn-danger" v-if="isRecording" @click="stopRecording()">Stop Recording</button>
-                    <button class="btn btn-warning" v-if="recordedAudio && !isRecording" @click="playRecorded()">Play Recorded</button>
+                <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
+                    <star-rating v-model="evaluateObj.rating"></star-rating>
                 </div>
 
-                <hr>
-                <label>Notes on this student</label>
-                <p class="text-muted">Share your thoughts on the student and reasoning behind your evaluation</p>
-                <textarea v-model="generalFeedback.feedback_notes" cols="30" rows="3" class="form-control"></textarea>
+                <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
+                    <yes-no v-model="evaluateObj.condition_met"></yes-no>
+                </div>
 
-                <label>Suggestions to improve their spoken english</label>
-                <textarea v-model="generalFeedback.feedback_suggestions" cols="30" rows="3" class="form-control"></textarea>
+                <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
+                    <multiple-choice v-model="evaluateObj.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
+                </div>
             </div>
-        </div>
-        <hr>
-        <button class="btn btn-primary" @click="submit()">Submit</button>
+            <hr>
+            <div style="width:100px;margin:auto;height:120px;">
+                <div class="recording-indicator-wrapper" v-if="isRecording">
+                    <div v-bind:style="{ transform: `scale(${audioPulse})`}" class="h5p-audio-recorder-vu-meter"></div>
+                </div>
+            </div>
+            
+            <div class="card" v-if="hasGeneralFeedback">
+                <div class="card-body">
+                    <div class="text-center">
+                        <button class="btn btn-success" v-if="!isRecording" @click="startRecording()">Start Recording</button>
+                        <button class="btn btn-danger" v-if="isRecording" @click="stopRecording()">Stop Recording</button>
+                        <button class="btn btn-warning" v-if="recordedAudio && !isRecording" @click="playRecorded()">Play Recorded</button>
+                    </div>
 
+                    <hr>
+                    <label>Notes on this student</label>
+                    <p class="text-muted">Share your thoughts on the student and reasoning behind your evaluation. Will be shared with the student.</p>
+                    <textarea v-model="generalFeedback.feedback_notes" cols="30" rows="3" class="form-control"></textarea>
+                    <br>
+                    <label>Suggestions to improve spoken english</label>
+                    <textarea v-model="generalFeedback.feedback_suggestions" cols="30" rows="3" class="form-control"></textarea>
+                </div>
+            </div>
+            <hr>
+            <p class="text-danger"><span v-if="error">An error occurred, make sure all fields are filled.</span></p>
+
+            <button class="btn btn-primary" @click="submit()">Submit</button>
+        </div>
     </div>
 </template>
 <script>
@@ -92,6 +100,7 @@ export default {
     data() {
         return {
             evaluation: false,
+            noEvaluation: false,
             processing: false,
             activeAudio: false,
             activeAudioIndex: false,
@@ -102,26 +111,15 @@ export default {
             pulseQuery: false,
             hasGeneralFeedback: false,
             isRecording: false,
-            generalFeedback: {feedback_notes:"", feedback_suggestions:""}
+            generalFeedback: {feedback_notes:"", feedback_suggestions:""},
+            error: false
         }
     },
     created() {
 
-        this.axios.get('/v5/me/lesson_to_evaluate')
-            .then((res) => {
-                this.evaluation = res.data;
-                this.learningObjectives = this.evaluation.lesson.evaluatable_objectives;
-
-                this.learningObjectives.forEach((obj) => {
-                    //TODO: hardcoding the logic
-                    if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
-                        this.hasGeneralFeedback = true;
-                    }
-                });
-
-            }, () => {
-
-            });
+        this.evaluation = false;
+        this.reload();
+        
     },
     components: {
       StarRating,
@@ -193,7 +191,9 @@ export default {
             });
             
             this.axios.post('/v5/students/learning_nodes/' + this.evaluation.session.id + '/evaluate', payload).then(() => {
-
+                this.reload();
+            }, () => {
+                this.error = true;
             });
         },
         startRecording() {
@@ -237,6 +237,25 @@ export default {
             });
 
             s.play();
+        },
+        reload() {
+            this.axios.get('/v5/me/lesson_to_evaluate')
+                .then((res) => {
+                    this.evaluation = res.data;
+                    this.learningObjectives = this.evaluation.lesson.evaluatable_objectives;
+
+                    this.learningObjectives.forEach((obj) => {
+                        //TODO: hardcoding the logic
+                        if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
+                            this.hasGeneralFeedback = true;
+                        }
+                    });
+
+                }, (error) => {
+                    if (error.response.status == 404) {
+                        this.noEvaluation = true;
+                    }
+                });
         }
     }
 }

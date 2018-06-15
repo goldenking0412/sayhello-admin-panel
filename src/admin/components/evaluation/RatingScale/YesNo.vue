@@ -1,13 +1,13 @@
 <template>
     <div>
-        <label>
-            <input type="radio" v-model="inputVal" @click="setValue(true)" :value="true"> Yes
-        </label>
-
-        <label>
-            <input type="radio" v-model="inputVal" @click="setValue(false)" :value="false"> No
-        </label>
-
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" v-model="inputVal" @click="setValue(true)" :value="true"> 
+            <label class="form-check-label">Yes</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" v-model="inputVal" @click="setValue(false)" :value="false"> 
+          <label class="form-check-label">No</label>
+        </div>
     </div>
 </template>
 

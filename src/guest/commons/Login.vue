@@ -33,7 +33,7 @@
           .then((res) => {
             this.axios.defaults.headers['Authorization'] = 'Bearer ' +  res.data.access_token
             localStorage.setItem('access_token', res.data.access_token)
-            this.$router.push("/admin")
+            this.$router.push("/admin/evaluators/evaluate")
             this.$flash.notify('success', 'Login successfully');
           })
           .catch((res) => {
