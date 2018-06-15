@@ -79,7 +79,8 @@
                 </div>
             </div>
             <hr>
-            <p class="text-danger"><span v-if="error">An error occurred, make sure all fields are filled.</span></p>
+            <p class="text-danger"><span v-if="error">An error occurred, make sure all fields are filled ({{error}}).</span></p>
+            <p class="text-muted"><span v-if="processing">Please wait.</span></p>
 
             <button class="btn btn-primary" @click="submit()">Submit</button>
         </div>
@@ -118,7 +119,23 @@ export default {
     created() {
 
         this.evaluation = false;
-        this.reload();
+        this.axios.get('/v5/me/lesson_to_evaluate')
+            .then((res) => {
+                this.evaluation = res.data;
+                this.learningObjectives = this.evaluation.lesson.evaluatable_objectives;
+
+                this.learningObjectives.forEach((obj) => {
+                    //TODO: hardcoding the logic
+                    if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
+                        this.hasGeneralFeedback = true;
+                    }
+                });
+
+            }, (error) => {
+                if (error.response.status == 404) {
+                    this.noEvaluation = true;
+                }
+            });
         
     },
     components: {
@@ -146,6 +163,7 @@ export default {
             this.activeAudioIndex = false;
         },
         submit() {
+            this.processing = true;
 
             let payload = {
                 lesson_evaluations: [],
@@ -192,8 +210,11 @@ export default {
             
             this.axios.post('/v5/students/learning_nodes/' + this.evaluation.session.id + '/evaluate', payload).then(() => {
                 this.reload();
-            }, () => {
-                this.error = true;
+            }, (error) => {
+                this.processing = false;
+                if (error.response.status == 422) {
+                    this.error = error.response.data.errors[0];
+                }
             });
         },
         startRecording() {
@@ -239,23 +260,9 @@ export default {
             s.play();
         },
         reload() {
-            this.axios.get('/v5/me/lesson_to_evaluate')
-                .then((res) => {
-                    this.evaluation = res.data;
-                    this.learningObjectives = this.evaluation.lesson.evaluatable_objectives;
-
-                    this.learningObjectives.forEach((obj) => {
-                        //TODO: hardcoding the logic
-                        if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
-                            this.hasGeneralFeedback = true;
-                        }
-                    });
-
-                }, (error) => {
-                    if (error.response.status == 404) {
-                        this.noEvaluation = true;
-                    }
-                });
+            this.stopAudio();
+            //reloading to clear data completely
+            this.$router.go(this.$router.currentRoute);
         }
     }
 }
