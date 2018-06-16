@@ -15,7 +15,9 @@
             Took learning node
           </div>
           <div class="col-8">
-            <select name="" id="" class="form-control">
+            <select v-model="search.took_learning_node" class="form-control">
+              <option value="" selected></option>
+              <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
             </select>
           </div>
         </div>
@@ -37,20 +39,16 @@
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Last Learning Node</th>
               <th>Registered Since</th>
               <th>View</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="object in students" :key="object.id">
-              <td>{{ object.title }}</td>
-              <td>
-                <span class="badge badge-secondary" v-for="tag in object.tags" :key="tag"
-                  style="margin-right: 5px;">
-                  {{ tag }}
-                </span>
-              </td>
+            <tr v-for="student in students" :key="student.id">
+              <td>{{ student.name }}</td>
+              <td>{{ student.email }}</td>
+              <td>{{ student.phone }}</td>
+              <td>{{ student.created_at | moment("DD/MM/YYYY")}}</td>
               <td>
                 <button class="btn btn-sm btn-primary" @click.prevent="showObjective(object)">
                   View
@@ -79,11 +77,13 @@
     data() {
       return {
         students: [],
+        learningNodes: [],
         total: 0,
         search: {
-          limit: 50,
+          per_page: 50,
           page: 1,
-          search: ''
+          search: '',
+          took_learning_node: ''
         }
       }
     },
@@ -94,19 +94,30 @@
       loadStudents() {
         let params = {}
         Object.assign(params, this.search)
+        params.took_learning_node = params.took_learning_node ? params.took_learning_node : null
 
-        this.axios.get('/v5/students')
-        .then((res) => {
-          this.learnings = res.data.data
-          this.total = res.data.total
-        })
-        .catch((err) => {
+        this.axios.get('/v5/admin/students', {params: params})
+          .then((res) => {
+            this.students = res.data.data
+            this.total = res.data.total
+          })
+          .catch((err) => {
 
-        })
+          })
+      },
+      loadLearningNodes() {
+        this.axios.get('/v5/admin/learning_nodes', {params: {perpage: 9999}})
+          .then((res) => {
+            this.learningNodes = res.data.data;
+          })
+          .catch((err) => {
+
+          })
       }
     },
     mounted() {
       this.loadStudents()
+      this.loadLearningNodes();
     }
   }
 </script>
