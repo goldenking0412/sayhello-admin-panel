@@ -50,9 +50,9 @@
               <td>{{ student.phone }}</td>
               <td>{{ student.created_at | moment("DD/MM/YYYY")}}</td>
               <td>
-                <button class="btn btn-sm btn-primary" @click.prevent="showObjective(object)">
-                  View
-                </button>
+                <router-link class="btn btn-sm btn-primary" :to="{name: 'students.show', params: {id: student.id}}">
+                  Show
+                </router-link>
               </td>
             </tr>
             <tr v-if="!students.length">
