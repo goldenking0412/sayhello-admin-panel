@@ -17,15 +17,22 @@
         </button>
       </div>
     </form>
+    <Loading v-if="loading"/>
   </modal>
 </template>
 
 <script>
+  import Loading from '../../../commons/Loading.vue'
+
   export default {
+    components: {
+      Loading
+    },
     data() {
       return {
         student: null,
-        note: ''
+        note: '',
+        loading: false
       }
     },
     methods: {
@@ -41,14 +48,17 @@
         });
       },
       createNote() {
-          this.axios.post('/v5/admin/students/' + this.student.id + '/notes', { note: this.note})
-            .then((res) => {
-              this.$modal.hide('students.addNote')
-              this.$emit('added-note', res.data)
-            })
-            .catch((err) => {
+        this.loading = true
 
-            })
+        this.axios.post('/v5/admin/students/' + this.student.id + '/notes', { note: this.note})
+          .then((res) => {
+            this.loading = false
+            this.$modal.hide('students.addNote')
+            this.$emit('added-note', res.data)
+          })
+          .catch((err) => {
+            this.loading = false
+          })
       },
       close() {
         this.$modal.hide('students.addNote');
