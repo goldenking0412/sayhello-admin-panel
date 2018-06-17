@@ -10,6 +10,7 @@ import App from './App.vue'
 import guestRoutes from './guest/router'
 import adminRoutes from './admin/router'
 import lodash from 'lodash'
+import VueMoment from 'vue-moment'
 
 import ENV from './env'
 
@@ -24,6 +25,7 @@ Vue.use(VueFlash);
 Vue.use(Router)
 Vue.use(VModal)
 Vue.use(VueAxios, axios)
+Vue.use(VueMoment);
 
 const router = new Router({
   mode: 'history',

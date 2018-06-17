@@ -7,17 +7,20 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+        <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'evaluation.evaluation'}">Evaluate</router-link>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'evaluation.precheck'}">Precheck</router-link>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'sessions.searches'}">Sessions search</router-link>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'learning.objectives'}">Learning Objectives</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{name: 'students.index'}">Students</router-link>
         </li>
       </ul>
       <ul class="navbar-nav">

@@ -89,7 +89,7 @@
         Object.assign(params, this.search)
         params.tags = this.tags.map(tag => tag.text)
 
-        this.axios.get('/v5/learning_objectives', {params: params})
+        this.axios.get('/v5/admin/learning_objectives', {params: params})
         .then((res) => {
           this.learnings = res.data.data
         })
