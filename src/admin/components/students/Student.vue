@@ -43,11 +43,6 @@
 
       <div class="tab-content" style="margin-top: 20px;">
         <div class="tab-pane active" id="learning-tab" role="tabpanel">
-          <div class="text-right mb-4">
-            <button class="btn btn-sm btn-success" @click.prevent="addLearningNode()">
-              Add Learning Node
-            </button>
-          </div>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -73,6 +68,11 @@
           </table>
         </div>
         <div class="tab-pane" id="path-tab" role="tabpanel">
+          <div class="text-right mb-4">
+            <button class="btn btn-sm btn-success" @click.prevent="addLearningNode()">
+              Add Learning Node
+            </button>
+          </div>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -186,7 +186,7 @@
         this.loadStudent()
       },
       addedLearningNode(student) {
-        this.loadStudent()
+        this.loadLearningNodes()
       }
     },
     mounted() {

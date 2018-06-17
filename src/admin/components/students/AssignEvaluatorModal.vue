@@ -23,16 +23,23 @@
         </button>
       </div>
     </form>
+    <Loading v-if="loading"/>
   </modal>
 </template>
 
 <script>
+  import Loading from '../../../commons/Loading.vue'
+
   export default {
+    components: {
+      Loading
+    },
     data() {
       return {
         student: null,
         evaluator_id: '',
-        evaluators: []
+        evaluators: [],
+        loading: false
       }
     },
     mounted() {
@@ -60,14 +67,16 @@
           })
       },
       addNode() {
+          this.loading = true
           this.axios.put('/v5/admin/students/' + this.student.id,
               { evaluator_id: this.evaluator_id })
             .then((res) => {
+              this.loading = false
               this.$modal.hide('students.assign-evaluator')
               this.$emit('assigned-evaluator', res.data)
             })
             .catch((err) => {
-
+              this.loading = false
             })
       },
       close() {
