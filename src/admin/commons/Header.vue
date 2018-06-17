@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link class="nav-link" :to="{name: 'evaluation.evaluation'}">Evaluate</router-link>
+          <router-link class="nav-link" :to="{name: 'evaluation.evaluate'}">Evaluate</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'evaluation.precheck'}">Precheck</router-link>
