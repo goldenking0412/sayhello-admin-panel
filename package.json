@@ -10,6 +10,8 @@
   "dependencies": {
     "@johmun/vue-tags-input": "^1.5.3",
     "axios": "^0.18.0",
+    "bugsnag-js": "^4.7.1",
+    "bugsnag-vue": "^1.0.1",
     "howler": "^2.0.12",
     "lodash": "^4.17.10",
     "recordrtc": "^5.4.6",

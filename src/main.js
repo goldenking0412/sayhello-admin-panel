@@ -14,6 +14,11 @@ import VueMoment from 'vue-moment'
 
 import ENV from './env'
 
+const bugsnag = require('bugsnag-js')
+const bugsnagClient = bugsnag('e3800fb1e85ac0024c59fc7237addf7a')
+const bugsnagVue = require('bugsnag-vue')
+bugsnagClient.use(bugsnagVue(Vue))
+
 
 Object.defineProperty(Vue.prototype, '$lodash', { value: lodash });
 
