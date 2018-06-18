@@ -52,8 +52,8 @@
           <tbody>
             <tr v-for="student in students" :key="student.id">
               <td>{{ student.name }}</td>
-              <td>{{ student.user.email }}</td>
-              <td>{{ student.user.phone }}</td>
+              <td>{{ $lodash.get(student, 'user.email') }}</td>
+              <td>{{ $lodash.get(student, 'user.phone') }}</td>
               <td>{{ student.created_at | moment("DD/MM/YYYY")}}</td>
               <td>
                 <router-link class="btn btn-sm btn-primary" :to="{name: 'students.show', params: {id: student.id}}">
