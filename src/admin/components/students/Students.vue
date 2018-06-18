@@ -24,7 +24,7 @@
             <option value="pending">Pending</option>
             <option value="rejected">Rejected</option>
             <option value="evaluation_pending">Evaluation Pending</option>
-            <option value="complete">Complete</option>
+            <option value="completed">Complete</option>
           </select>
       </div>
     </div>
