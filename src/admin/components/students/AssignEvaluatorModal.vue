@@ -74,8 +74,9 @@
               this.loading = false
               this.$modal.hide('students.assign-evaluator')
               this.$emit('assigned-evaluator', res.data)
+              this.$flash.notify('success', "Evaluator has been assigned successfully")
             })
-            .catch((err) => {
+            .catch((res) => {
               this.loading = false
             })
       },

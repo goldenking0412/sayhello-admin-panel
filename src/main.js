@@ -11,7 +11,7 @@ import guestRoutes from './guest/router'
 import adminRoutes from './admin/router'
 import lodash from 'lodash'
 import VueMoment from 'vue-moment'
-import VeeValidate from 'vee-validate';
+import VeeValidate from 'vee-validate'
 
 import ENV from './env'
 
