@@ -4,30 +4,36 @@
     <hr>
     <h4>Search</h4>
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
+            General search
           <input type="text" class="form-control" v-model="search.search" placeholder="By name, email, phone">
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="row">
-          <div class="col-4" style="margin-top: 7px;">
-            Took learning node
-          </div>
-          <div class="col-8">
-            <select v-model="search.took_learning_node" class="form-control">
-              <option value="" selected></option>
-              <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
-            </select>
-          </div>
-        </div>
+      <div class="col-sm-5">
+        Took learning node
+        <select v-model="search.took_learning_node" class="form-control">
+          <option value="" selected></option>
+          <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
+        </select>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-4">
+        Learning node status
+          <select v-model="search.learning_node_status" class="form-control">
+            <option value="" selected></option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+            <option value="evaluation_pending">Evaluation Pending</option>
+            <option value="complete">Complete</option>
+          </select>
+      </div>
+    </div>
+    <p class="text-right">
         <button class="btn btn-primary" @click.prevent="loadStudents()">
           Search
         </button>
-      </div>
-    </div>
+    </p>
+    <hr>
     <section class="section">
       <div>
         Results: <strong>{{ total }}</strong>
@@ -46,8 +52,8 @@
           <tbody>
             <tr v-for="student in students" :key="student.id">
               <td>{{ student.name }}</td>
-              <td>{{ student.email }}</td>
-              <td>{{ student.phone }}</td>
+              <td>{{ student.user.email }}</td>
+              <td>{{ student.user.phone }}</td>
               <td>{{ student.created_at | moment("DD/MM/YYYY")}}</td>
               <td>
                 <router-link class="btn btn-sm btn-primary" :to="{name: 'students.show', params: {id: student.id}}">
@@ -106,6 +112,7 @@
         let params = {}
         Object.assign(params, this.search)
         params.took_learning_node = params.took_learning_node ? params.took_learning_node : null
+        params.learning_node_status = params.learning_node_status ? params.learning_node_status : null
 
         this.axios.get('/v5/admin/students', {params: params})
           .then((res) => {
