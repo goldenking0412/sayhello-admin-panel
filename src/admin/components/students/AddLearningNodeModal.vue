@@ -76,8 +76,11 @@
             this.$modal.hide('students.add-learning-node')
             this.$emit('added-learning-node', res.data)
           })
-          .catch((err) => {
+          .catch((res) => {
             this.loading = false
+
+            let errors = res.response.data.errors;
+            this.$flash.notify('danger', errors[0])
           })
       },
       close() {

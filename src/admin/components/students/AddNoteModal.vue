@@ -55,6 +55,7 @@
             this.loading = false
             this.$modal.hide('students.addNote')
             this.$emit('added-note', res.data)
+            this.$flash.notify('success', "Note has been added successfully")
           })
           .catch((err) => {
             this.loading = false

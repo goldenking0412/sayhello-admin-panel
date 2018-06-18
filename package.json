@@ -25,6 +25,7 @@
     "vue-star-rating": "^1.6.0",
     "vue2-datepicker": "^1.9.7",
     "vue2-flash": "^1.0.6",
+    "vuejs-paginate": "^1.9.3",
     "webpack": "^3.11.0"
   },
   "devDependencies": {

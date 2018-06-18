@@ -62,23 +62,34 @@
             </tr>
           </tbody>
         </table>
-        <Pagination />
+        <paginate
+          :page-count="totalPages"
+          :click-handler="changePage"
+          :container-class="'pagination justify-content-end'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'">
+        </paginate>
       </div>
     </section>
   </div>
 </template>
 <script>
-  import Pagination from '../../../commons/Pagination.vue'
+  import Paginate from 'vuejs-paginate'
 
   export default {
     components: {
-      Pagination
+      Paginate
     },
     data() {
       return {
         students: [],
         learningNodes: [],
         total: 0,
+        totalPages: 0,
         search: {
           per_page: 50,
           page: 1,
@@ -100,6 +111,8 @@
           .then((res) => {
             this.students = res.data.data
             this.total = res.data.total
+            this.search.per_page = res.data.per_page
+            this.totalPages = Math.ceil(res.data.total / res.data.per_page)
           })
           .catch((err) => {
 
@@ -113,6 +126,13 @@
           .catch((err) => {
 
           })
+      },
+      changePage(page) {
+        console.log(page)
+        if(page && this.search.page != page) {
+          this.search.page = page
+          this.loadStudents()
+        }
       }
     },
     mounted() {
