@@ -1,11 +1,18 @@
 <template>
   <div>
-    <h2>Students</h2>
+    <h2>
+      Students
+      <span v-if="student && student.status == 'active'" class="badge badge-success">Active</span>
+      <span v-if="student && student.status == 'suspended'" class="badge badge-danger">Suspended</span>
+    </h2>
     <hr>
     <section class="section" v-if="student">
       <div class="row">
         <div class="col-sm-6">
-          <h3>{{ student.name }}</h3>
+          <h3>
+            {{ student.name }}
+            <span class="badge badge-primary mr-1" v-for="(tag, index) in student.tags" :key="index">{{ tag }}</span>
+          </h3>
           <p>
             <strong>Email:</strong> {{ student.email }} <br>
             <strong>Phone:</strong> {{ student.phone }} <br>
@@ -13,6 +20,10 @@
           </p>
         </div>
         <div class="col-sm-6 text-right">
+          <button class="btn btn-success btn-sm" @click.prevent="editStudent()">
+            Edit
+          </button>
+          <div class="divider mb-2"></div>
           <button class="btn btn-primary btn-sm" @click.prevent="assignEvaluator()">
             Assign to Evaluator
           </button>
@@ -58,7 +69,9 @@
                 <td>{{ node.status }}</td>
                 <td>{{ node.created_at | moment('DD/MM/YYYY') }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary">View</button>
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node)">
+                    View
+                  </button>
                 </td>
               </tr>
               <tr v-if="!learningNodes.length">
@@ -88,7 +101,9 @@
                 <td>{{ node.status }}</td>
                 <td>{{ node.created_at | moment('DD/MM/YYYY') }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary">View</button>
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node)">
+                    View
+                  </button>
                 </td>
               </tr>
               <tr v-if="!paths.length">
@@ -120,6 +135,8 @@
     <AddNoteModal v-on:added-note="this.addedNote"/>
     <AddLearningNodeModal v-on:added-learning-node="this.addedLearningNode"/>
     <AssignEvaluatorModal v-on:assigned-evaluator="this.assignedEvaluator" />
+    <SessionModal />
+    <EditStudentModal v-on:user-updated="this.userUpdated"/>
   </div>
 </template>
 <script>
@@ -127,10 +144,13 @@
   import AddNoteModal from './AddNoteModal.vue'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import AssignEvaluatorModal from './AssignEvaluatorModal.vue'
+  import SessionModal from './SessionModal.vue'
+  import EditStudentModal from './EditStudentModal.vue'
 
   export default {
     components: {
-      Pagination, AddNoteModal, AddLearningNodeModal, AssignEvaluatorModal
+      Pagination, AddNoteModal, AddLearningNodeModal, AssignEvaluatorModal,
+      SessionModal, EditStudentModal
     },
     data() {
       return {
@@ -146,7 +166,7 @@
       loadStudent() {
         this.axios.get('/v5/admin/students/' + this.$route.params.id)
           .then((res) => {
-            this.student = res.data
+            this.student = res.data.data
           })
           .catch((err) => {
 
@@ -169,6 +189,15 @@
           .catch((err) => {
 
           })
+      },
+      editStudent() {
+        this.$modal.show('students.edit', this.student)
+      },
+      userUpdated(student) {
+        this.student = student
+      },
+      showSession(node) {
+        this.$modal.show('students.session', node)
       },
       assignEvaluator() {
         this.$modal.show('students.assign-evaluator', this.student)
