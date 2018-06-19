@@ -59,3 +59,21 @@ main {
         color: red;
     }
 }
+
+.sessionModal .v--modal {
+    height: 80vh !important;
+    top: 10vh !important;
+    width: 800px !important;
+    max-width: 100%;
+    padding: 0px;
+    .sessionContent {
+        overflow: auto;
+        flex: 1 1 auto;
+        padding: 0px 15px 30px 15px;
+    }
+    .modalBody {
+        height: 80vh !important;
+        display: flex;
+        flex-direction: column;
+    }
+}

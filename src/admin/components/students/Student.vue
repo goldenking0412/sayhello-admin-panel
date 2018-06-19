@@ -225,3 +225,10 @@
     }
   }
 </script>
+
+<style scoped>
+  .badge {
+    font-size: 14px;
+    vertical-align: middle;
+  }
+</style>
