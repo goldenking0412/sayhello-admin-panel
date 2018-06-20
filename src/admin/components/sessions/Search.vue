@@ -31,7 +31,23 @@
             <option value="completed">Complete</option>
           </select>
       </div>
-      <div class="col-sm-4 offset-md-8">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <div>
+            From
+          </div>
+          <date-picker v-model="search.created_from" lang="en" :first-day-of-week="1"></date-picker>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <div>
+            To
+          </div>
+          <date-picker v-model="search.created_to" :not-before="search.created_from" lang="en" :first-day-of-week="1"></date-picker>
+        </div>
+      </div>
+      <div class="col-sm-4 offset-md-2">
         <div class="form-group">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" v-model="search.has_evaluation" class="custom-control-input" id="has_evaluations">
@@ -93,12 +109,14 @@
   </div>
 </template>
 <script>
+  import DatePicker from 'vue2-datepicker'
   import Paginate from 'vuejs-paginate'  
   import VueTagsInput from '@johmun/vue-tags-input'
   import SessionModal from '../students/SessionModal.vue'  
 
   export default {
     components: {
+      DatePicker,
       Paginate,
       SessionModal,
       VueTagsInput
@@ -129,6 +147,8 @@
         params.learning_node_id = params.learning_node_id ? params.learning_node_id : null
         params.status = params.status ? params.status : null
         params.has_evaluation = params.has_evaluation ? 1 : 0
+        params.created_from = params.created_from ? params.created_from.toISOString() : 0
+        params.created_to = params.created_to ? params.created_to.toISOString() : 0
         console.log(this.search)
         this.axios.get('/v5/admin/sessions', { params })
         .then((res) => {
