@@ -22,6 +22,9 @@
         <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'students.index'}">Students</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{name: 'conversations.index'}">Conversations</router-link>
+        </li>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item active">
