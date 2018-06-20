@@ -45,6 +45,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
+              <th>Tags</th>
               <th>Registered Since</th>
               <th>View</th>
             </tr>
@@ -54,6 +55,7 @@
               <td>{{ student.name }}</td>
               <td>{{ $lodash.get(student, 'user.email') }}</td>
               <td>{{ $lodash.get(student, 'user.phone') }}</td>
+              <td><span class="badge badge-primary mr-1" v-for="(tag, index) in student.tags" :key="index">{{ tag }}</span></td>
               <td>{{ student.created_at | moment("DD/MM/YYYY")}}</td>
               <td>
                 <router-link class="btn btn-sm btn-primary" :to="{name: 'students.show', params: {id: student.id}}">
