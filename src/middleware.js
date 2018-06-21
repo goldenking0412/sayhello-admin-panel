@@ -7,10 +7,10 @@ export default function middleware (router) {
     let requiredPermission = to.matched.map(record => record.meta.requiredPermission)[0]
 
     if(token && !window.user) {
-      axios.get('v3/me')
+      axios.get('v5/me')
         .then((res) => {
-          window.Bus.$emit('user.updated', res.data.user)
-          if(!requiredLogin || res.data.user.role == requiredPermission) {
+          window.Bus.$emit('user.updated', res.data)
+          if(!requiredLogin || res.data.role == requiredPermission) {
             next()
           }else {
             next({
