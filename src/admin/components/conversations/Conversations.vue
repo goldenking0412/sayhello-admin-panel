@@ -19,7 +19,11 @@
               <span style="color: #4CAF50" v-if="node.status == 'published' ">{{ node.status }}</span>
               <span style="color: #f44336" v-else>{{ node.status }}</span>
             </div>
-            <h5>{{ node.title }}</h5>
+            <h5>
+              <router-link :to="{name: 'conversations.show', params: {id: node.id }}">
+                {{ node.title }}
+              </router-link>
+            </h5>
             <p v-if="node.description">
               {{ node.description.en }}
             </p>

@@ -81,3 +81,12 @@ main {
 .v--modal-overlay {
     overflow: auto !important;
 }
+
+abbr {
+    color: #f44336;
+}
+
+.vue-tags-input {
+    max-width: initial !important;
+    width: 100%;
+  }

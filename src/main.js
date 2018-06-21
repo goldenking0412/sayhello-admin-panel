@@ -12,6 +12,12 @@ import adminRoutes from './admin/router'
 import lodash from 'lodash'
 import VueMoment from 'vue-moment'
 import VeeValidate from 'vee-validate'
+import VueQuillEditor from 'vue-quill-editor'
+
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 import ENV from './env'
 
@@ -27,12 +33,13 @@ axios.defaults.baseURL = ENV.BASE_URL
 
 axios.defaults.headers['Authorization'] = 'Bearer ' + localStorage.getItem('access_token')
 
-Vue.use(VueFlash);
+Vue.use(VueFlash)
 Vue.use(Router)
 Vue.use(VModal)
 Vue.use(VueAxios, axios)
 Vue.use(VueMoment)
 Vue.use(VeeValidate)
+Vue.use(VueQuillEditor)
 
 const router = new Router({
   mode: 'history',

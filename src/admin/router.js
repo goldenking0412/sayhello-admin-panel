@@ -5,7 +5,8 @@ import Precheck from './components/evaluation/Precheck.vue'
 import LearningObjectives from './components/learning/Objectives.vue'
 import Students from './components/students/Students.vue'
 import Student from './components/students/Student.vue'
-import Conversations from './components/conversations/Conversations.vue'
+
+import conversations from './components/conversations/router'
 
 const routes = [{
     path: '/admin',
@@ -41,11 +42,7 @@ const routes = [{
             name: 'students.show',
             component: Student
         },
-        {
-            path: '/conversations',
-            name: 'conversations.index',
-            component: Conversations
-        }
+        ...conversations
     ],
     meta: {
         requiredLogin: true,

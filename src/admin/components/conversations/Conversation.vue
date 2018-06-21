@@ -1,0 +1,169 @@
+<template>
+  <div v-if="node">
+    <div class="border mb-3 p-2 rounded">
+      <div class="row">
+        <div class="col-sm-3">
+          <img :src="node.image" :alt="node.title" class="img-fluid rounded">
+        </div>
+        <div class="col-sm-9">
+          <div class="status">
+            <span style="color: #4CAF50" v-if="node.status == 'published' ">{{ node.status }}</span>
+            <span style="color: #f44336" v-else>{{ node.status }}</span>
+          </div>
+          <h5>
+            <router-link :to="{name: 'conversations.show', params: {id: node.id }}">
+              {{ node.title }}
+            </router-link>
+          </h5>
+          <p v-if="node.description">
+            {{ node.description.en }}
+          </p>
+          <p>Duration: <strong>{{ node.duration }} mins</strong></p>
+          <div class="text-right">
+            <button class="btn btn-sm btn-primary">
+              Duplicate
+            </button>
+            <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode(node)">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-success ml-1">
+              Preview
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="dropdown text-right">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Add Block
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
+        <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
+        <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
+      </div>
+    </div>
+
+    <div class="listBlocks mt-2" v-if="node" @end="updateBlocks">
+      <draggable v-model="node.blocks" :options="{draggable:'.item'}">
+        <div class="border item rounded mb-3 p-4" v-for="(block, index) in node.blocks" :key="block.id">
+          <div class="text-right">
+            <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
+            <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
+            <button class="btn btn-secondary btn-sm" v-else>Content</button>
+          </div>
+          <h5>{{ block.en ? block.en.text : block.title}}</h5>
+          <div v-if="block.type == 'Content'" v-html="block.content"></div>
+          <div v-else>{{ block.sin.text }}</div>
+          <div class="mt-4" v-if="block.instructions && block.instructions.audio">
+            <audio controls style="width: 100%;">
+              <source :src="block.instructions.audio" type="audio/ogg">
+                Your browser does not support the audio element.
+            </audio>
+          </div>
+          <div class="mt-2 text-right">
+            <button class="btn btn-success btn-sm" @click.prevent="editBlock(block)">
+              <i class="far fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm ml-2" @click.prevent="removeBlock(index)">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </draggable>
+    </div>
+
+    <SystemDialogueModal v-on:added-block="addedBlock"/>
+    <ContentModal v-on:added-block="addedBlock"/>
+    <UserDialogueModal v-on:added-block="addedBlock"/>
+  </div>
+</template>
+
+<script>
+  import SystemDialogueModal from './SystemDialogueModal.vue'
+  import ContentModal from './ContentModal.vue'
+  import UserDialogueModal from './UserDialogueModal.vue'
+  import draggable from 'vuedraggable'
+
+  export default {
+    components: {
+      SystemDialogueModal, ContentModal, UserDialogueModal, draggable
+    },
+    data() {
+      return {
+        node: null
+      }
+    },
+    mounted() {
+      this.loadNode()
+    },
+    methods: {
+      loadNode() {
+        this.axios.get('/v5/admin/learning_nodes/' + this.$route.params.id)
+          .then((res) => {
+            this.node = res.data
+          })
+          .catch((res) => {
+
+          })
+      },
+      addBlock(type) {
+        this.$modal.show('learning-nodes.' + type, {node: this.node })
+      },
+      addedBlock(node) {
+        this.node = node
+      },
+      editBlock(block) {
+        let type = 'system-dialogue'
+
+        switch (block.type) {
+          case 'UserDialogue':
+            type = 'user-dialogue'
+            break;
+          case 'Content':
+            type = 'content'
+            break;
+          default:
+            break;
+        }
+
+        this.$modal.show('learning-nodes.' + type, {node: this.node, block: block})
+      },
+      removeBlock(index) {
+        this.node.blocks.splice(index, 1)
+        this.updateBlocks()
+      },
+      updateBlocks() {
+        let blocks = this.node.blocks
+        for (let block of blocks) {
+          block._id = null
+        }
+
+        this.axios.post('/v5/admin/learning_nodes/' + this.node.id + '/blocks', {blocks: blocks})
+          .then((res) => {
+            this.$flash.notify('success', "Blocks have been updated successfully")
+            this.node = res.data
+          })
+          .catch((err) => {
+          })
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .status {
+    position: absolute;
+    right: 20px;
+    top: 0px;
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 15px;
+    color: #4CAF50;
+  }
+  .listBlocks .item {
+    background: #FFF;
+    cursor: move;
+  }
+</style>
