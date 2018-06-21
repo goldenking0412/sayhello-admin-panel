@@ -30,7 +30,7 @@
       </div>
       <strong>Sample response</strong>
       <div class="form-group">
-        <input type="text" class="form-control" v-model="block.sample_reponse.audio" v-validate="'url'" name="audio"
+        <input type="text" class="form-control" v-model="block.sample_response.audio" v-validate="'url'" name="audio"
           placeholder="Audio URL">
         <div class="invalid-feedback" v-if="errors.has('audio')" style="display: block;">
           {{ errors.first('audio') }}
@@ -38,7 +38,7 @@
       </div>
       <div class="form-group">
         <label>
-          <input type="checkbox" v-model="block.sample_reponse.autoplay">
+          <input type="checkbox" v-model="block.sample_response.autoplay">
           Autoplay
         </label>
       </div>
@@ -110,7 +110,7 @@
           character: {},
           en: {},
           sin: {},
-          sample_reponse: {},
+          sample_response: {},
           instructions: {},
           options: {}
         }
