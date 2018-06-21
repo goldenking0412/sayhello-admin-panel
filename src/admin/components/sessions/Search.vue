@@ -133,6 +133,8 @@
           per_page: 50,
           page: 1,
           status: '',
+          created_from: 0,
+          created_to: 0,
           has_evaluation: true
         }
       }
@@ -147,8 +149,8 @@
         params.learning_node_id = params.learning_node_id ? params.learning_node_id : null
         params.status = params.status ? params.status : null
         params.has_evaluation = params.has_evaluation ? 1 : 0
-        params.created_from = params.created_from ? params.created_from.toISOString() : 0
-        params.created_to = params.created_to ? params.created_to.toISOString() : 0
+        params.created_from = params.created_from ? params.created_from.valueOf() / 1000 : null
+        params.created_to = params.created_to ? params.created_to.valueOf() / 1000 : null
         console.log(this.search)
         this.axios.get('/v5/admin/sessions', { params })
         .then((res) => {
