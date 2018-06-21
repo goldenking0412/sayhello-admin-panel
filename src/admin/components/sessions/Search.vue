@@ -33,6 +33,12 @@
       </div>
       <div class="col-sm-3">
         <div class="form-group">
+            By id
+          <input type="text" class="form-control" v-model="search.id" placeholder="By session id">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
           <div>
             From
           </div>
@@ -47,7 +53,7 @@
           <date-picker v-model="search.created_to" :not-before="search.created_from" lang="en" :first-day-of-week="1"></date-picker>
         </div>
       </div>
-      <div class="col-sm-4 offset-md-2">
+      <div class="col-sm-3">
         <div class="form-group">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" v-model="search.has_evaluation" class="custom-control-input" id="has_evaluations">
@@ -66,6 +72,7 @@
         <table class="table table-striped">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Student name</th>
               <th>Learning node</th>
               <th>Status</th>
@@ -75,6 +82,7 @@
           </thead>
           <tbody>
             <tr v-for="session in sessions" :key="session.id">
+              <td>{{ session.id }}</td>
               <td><router-link :to="{name: 'students.show', params: {id: session.student.id}}">{{ session.student.name }}</router-link></td>
               <td>{{ session.lesson.title }}</td>
               <td>{{ session.status }}</td>
