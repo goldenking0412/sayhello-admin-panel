@@ -15,9 +15,9 @@
         <div class="form-group">
           <label>Of student tags</label>
           <vue-tags-input
-              v-model="tag"
-              :tags="tags"
-              @tags-changed="newTags => tags = newTags"
+              v-model="studentTag"
+              :tags="studentTags"
+              @tags-changed="newTags => studentTags = newTags"
             />
         </div>
       </div>
@@ -59,6 +59,16 @@
             <input type="checkbox" v-model="search.has_evaluation" class="custom-control-input" id="has_evaluations">
             <label class="custom-control-label" for="has_evaluations">Has evaluations</label>
           </div>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label>Of session tags</label>
+          <vue-tags-input
+              v-model="sessionTag"
+              :tags="sessionTags"
+              @tags-changed="newTags => sessionTags = newTags"
+            />
         </div>
       </div>
     </div>
@@ -133,8 +143,10 @@
       return {
         sessions: [],
         learningNodes: [],
-        tag: '',
-        tags: [],
+        studentTag: '',
+        studentTags: [],
+        sessionTag: '',
+        sessionTags: [],
         total: 0,
         totalPages: 0,
         search: {
@@ -150,10 +162,11 @@
     methods: {
       loadSessions() {
         let params = {}
-        let tagsSearch = this.tags.map(tag => tag.text)
-        console.log(this.tags.length > 0)
+        let studentTagsSearch = this.studentTags.map(tag => tag.text)
+        let sessionTagsSearch = this.sessionTags.map(tag => tag.text)
         Object.assign(params, this.search)
-        params.student_tags = this.tags.length > 0 ? tagsSearch : null
+        params.student_tags = this.studentTags.length > 0 ? studentTagsSearch : null
+        params.tags = this.sessionTags.length > 0 ? sessionTagsSearch : null
         params.learning_node_id = params.learning_node_id ? params.learning_node_id : null
         params.status = params.status ? params.status : null
         params.has_evaluation = params.has_evaluation ? 1 : 0
