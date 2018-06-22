@@ -93,6 +93,10 @@
           this.block = JSON.parse(JSON.stringify(event.params.block))
           this.isNewObject = false
         }
+        
+        if (!this.block.character.name) {
+          this.block.character.name = this.node.options.preffered_character
+        }
 
         this.loadCharacters()
       },

@@ -49,7 +49,7 @@
           Image <abbr title="Required">*</abbr>
         </div>
         <div class="col-8">
-          <input type="text" v-validate="'required|url'" class="form-control" v-model="node.image" name="image">
+          <input type="file" class="form-control" ref="imageFile" v-validate="imageValidate" name="image" accept="image/*">
           <div class="invalid-feedback" v-if="errors.has('image')" style="display: block;">
             {{ errors.first('image') }}
           </div>
@@ -60,7 +60,7 @@
           Preffered System Voice<abbr title="Required">*</abbr>
         </div>
         <div class="col-8">
-          <select name="character" v-validate="'required'" class="form-control" v-model="node.preffered_character">
+          <select name="character" v-validate="'required'" class="form-control" v-model="node.options.preffered_character">
             <option value="">-- Select --</option>
             <option :value="name" v-for="(name, index) in characters" :key="index">{{ name }}</option>
           </select>
@@ -127,6 +127,7 @@
     },
     data() {
       return {
+        imageValidate: 'required',
         characters: [],
         note: '',
         loading: false,
@@ -156,14 +157,35 @@
         } else {
           Object.assign(this.$data, this.$options.data())
         }
+
+        if (this.node.image) {
+          this.imageValidate = ''
+        }
+
         this.loadCharacters()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.createNode()
+            if(this.$refs.imageFile.files.length) {
+              this.uploadImage()
+            }else {
+              this.createNode()
+            }
+
             return
           }
+        });
+      },
+      uploadImage() {
+        let uploadProcess = uploadcare.fileFrom('object', this.$refs.imageFile.files[0]);
+        this.loading = true
+
+        uploadProcess.done((fileInfo) => {
+          this.node.image = fileInfo.cdnUrl + fileInfo.name
+          this.createNode()
+        }).fail((error, fileInfo) => {
+          this.$flash.notify('warning', "Can't upload image. Please try again")
         });
       },
       createNode() {
