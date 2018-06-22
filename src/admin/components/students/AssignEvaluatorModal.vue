@@ -58,9 +58,9 @@
         });
       },
       loadLearningNodes() {
-        this.axios.get('/v3/evaluators')
+        this.axios.get('/v5/admin/users', {params: { role: 'evaluator', per_page: 9999}})
           .then((res) => {
-            this.evaluators = res.data.result
+            this.evaluators = res.data.data
           })
           .catch((err) => {
 
