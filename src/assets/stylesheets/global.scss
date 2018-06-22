@@ -76,6 +76,13 @@ main {
         display: flex;
         flex-direction: column;
     }
+
+    .tagDropdown {
+        width: fit-content;
+        position: absolute;
+        top: 15px;
+        left: 635px;
+    }
 }
 
 .v--modal-overlay {
