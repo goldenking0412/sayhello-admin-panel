@@ -94,9 +94,6 @@
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')
-      },
-      editNode(node) {
-        this.$modal.show('learning-nodes.create', node)
       }
     }
   }

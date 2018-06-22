@@ -152,8 +152,10 @@
       beforeOpen(event) {
         if (event.params) {
           this.isNewObject = false
-          this.node = event.params
-          this.tags = this.node.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          this.node = JSON.parse(JSON.stringify(event.params))
+          if (this.node.tags) {
+            this.tags = this.node.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          }
           if (!this.node.description) {
             this.node.description = {}
           }
@@ -188,19 +190,28 @@
           this.node.image = fileInfo.cdnUrl + fileInfo.name
           this.createNode()
         }).fail((error, fileInfo) => {
+          this.loading = false
           this.$flash.notify('warning', "Can't upload image. Please try again")
         });
       },
       createNode() {
         this.loading = true
         this.node.tags = this.tags.map(tag => tag.text)
+        let apiURL = this.isNewObject ? '/v5/admin/learning_nodes' : '/v5/admin/learning_nodes/' + this.node.id
+        let params = {learning_node: this.node, learning_objectives: [] }
+        let successMessage = 'Node has been created successfully'
 
-        this.axios.post('/v5/admin/learning_nodes', {learning_node: this.node, learning_objectives: [] })
+        if (!this.isNewObject) {
+          params = this.node
+          successMessage = 'Node has been updated successfully'
+        }
+
+        this.axios.post(apiURL, params)
           .then((res) => {
             this.loading = false
             this.$modal.hide('learning-nodes.create')
-            this.$flash.notify('success', "Node has been created successfully")
-            this.$emit('created-learning-node')
+            this.$flash.notify('success', successMessage)
+            this.isNewObject ? this.$emit('created-learning-node') : this.$emit('updated-node', res.data)
           })
           .catch((err) => {
             this.loading = false

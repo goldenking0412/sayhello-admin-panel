@@ -5,36 +5,23 @@
     <p>Available merge fields: {name} {date} {time} {greetings_time}</p>
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
-        <label>Character <abbr title="Required">*</abbr></label>
-        <select name="character" v-validate="'required'" class="form-control" v-model="block.character.name">
+        <label>Character</label>
+        <select name="character" class="form-control" v-model="block.character.name">
           <option value="">-- Select --</option>
           <option :value="name" v-for="(name, index) in characters" :key="index">{{ name }}</option>
         </select>
-        <div class="invalid-feedback" v-if="errors.has('character')" style="display: block;">
-          {{ errors.first('character') }}
-        </div>
       </div>
       <div class="form-group">
-        <label>Text to Speak <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.en.text" v-validate="'required'" name="text">
-        <div class="invalid-feedback" v-if="errors.has('text')" style="display: block;">
-          {{ errors.first('text') }}
-        </div>
+        <label>Text to Speak</label>
+        <input type="text" class="form-control" v-model="block.en.text" name="text">
       </div>
       <div class="form-group">
-        <label>Sinhala Meaning <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.sin.text" v-validate="'required'" name="meaning">
-        <div class="invalid-feedback" v-if="errors.has('meaning')" style="display: block;">
-          {{ errors.first('meaning') }}
-        </div>
+        <label>Sinhala Meaning</label>
+        <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
       </div>
       <h5>Instructions</h5>
       <div class="form-group">
-        <input type="text" class="form-control" v-model="block.instructions.audio" v-validate="'url'" name="audio"
-          placeholder="Audio URL">
-        <div class="invalid-feedback" v-if="errors.has('audio')" style="display: block;">
-          {{ errors.first('audio') }}
-        </div>
+        <input type="file" class="form-control" ref="audioFile" accept="audio/*">
       </div>
       <h5>Other options</h5>
       <div class="form-group">
@@ -103,9 +90,25 @@
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.addBlock()
+            if(this.$refs.audioFile.files.length) {
+              this.uploadAudio()
+            }else {
+              this.addBlock()
+            }
             return
           }
+        });
+      },
+      uploadAudio() {
+        let uploadProcess = uploadcare.fileFrom('object', this.$refs.audioFile.files[0]);
+        this.loading = true
+
+        uploadProcess.done((fileInfo) => {
+          this.block.instructions.audio = fileInfo.cdnUrl + fileInfo.name
+          this.addBlock()
+        }).fail((error, fileInfo) => {
+          this.loading = false
+          this.$flash.notify('warning', "Can't upload audio. Please try again")
         });
       },
       addBlock() {
