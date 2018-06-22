@@ -32,9 +32,9 @@
               <button class="btn btn-sm btn-primary">
                 Duplicate
               </button>
-              <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode(node)">
+              <router-link class="btn btn-sm btn-info ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
                 Edit
-              </button>
+              </router-link>
               <button class="btn btn-sm btn-success ml-1">
                 Preview
               </button>
