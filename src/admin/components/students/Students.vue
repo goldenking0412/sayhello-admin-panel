@@ -27,6 +27,16 @@
             <option value="completed">Complete</option>
           </select>
       </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>Tags:</label>
+          <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              @tags-changed="newTags => tags = newTags"
+            />
+        </div>
+      </div>
     </div>
     <p class="text-right">
         <button class="btn btn-primary" @click.prevent="loadStudents()">
@@ -87,15 +97,19 @@
 </template>
 <script>
   import Paginate from 'vuejs-paginate'
+  import VueTagsInput from '@johmun/vue-tags-input'
 
   export default {
     components: {
-      Paginate
+      Paginate,
+      VueTagsInput
     },
     data() {
       return {
         students: [],
         learningNodes: [],
+        tag: '',
+        tags: [],
         total: 0,
         totalPages: 0,
         search: {
@@ -112,7 +126,9 @@
       },
       loadStudents() {
         let params = {}
+        let tagsSearch = this.tags.map(tag => tag.text).join(',')
         Object.assign(params, this.search)
+        params.search = params.search.length > 0 ? `${params.search},${tagsSearch}` : tagsSearch
         params.took_learning_node = params.took_learning_node ? params.took_learning_node : null
         params.learning_node_status = params.learning_node_status ? params.learning_node_status : null
 
