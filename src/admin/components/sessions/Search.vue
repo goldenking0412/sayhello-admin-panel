@@ -18,6 +18,7 @@
               v-model="studentTag"
               :tags="studentTags"
               @tags-changed="newTags => studentTags = newTags"
+              :autocomplete-items="getAutocompleteTags(studentTag)"
             />
         </div>
       </div>
@@ -68,6 +69,7 @@
               v-model="sessionTag"
               :tags="sessionTags"
               @tags-changed="newTags => sessionTags = newTags"
+              :autocomplete-items="getAutocompleteTags(sessionTag)"
             />
         </div>
       </div>
@@ -131,8 +133,10 @@
   import Paginate from 'vuejs-paginate'  
   import VueTagsInput from '@johmun/vue-tags-input'
   import SessionModal from '../students/SessionModal.vue'  
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
       DatePicker,
       Paginate,

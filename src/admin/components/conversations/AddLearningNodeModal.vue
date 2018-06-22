@@ -80,6 +80,7 @@
               :tags="tags"
               placeholder="Add Word"
               @tags-changed="newTags => tags = newTags"
+              :autocomplete-items="getAutocompleteTags(tag)"
             />
           </div>
         </div>
@@ -120,8 +121,10 @@
 <script>
   import Loading from '../../../commons/Loading.vue'
   import VueTagsInput from '@johmun/vue-tags-input';
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
       Loading, VueTagsInput
     },
