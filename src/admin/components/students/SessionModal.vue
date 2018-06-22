@@ -46,15 +46,16 @@
     </modal>
     <modal name="students.session" class="sessionModal" @before-open="beforeOpen">
       <div v-if="lesson" class="modalBody">
-        <div style="width: fit-content;
-      position: absolute;
-      top: 15px;
-      left: 635px;">
-          <ul class="list-group">
-            <li class="list-group-item active">Add Tag/Notes</li>
-            <li class="list-group-item" @click="openStudentModal" style="cursor: pointer;">Student</li>
-            <li class="list-group-item" @click="openSessionModal" style="cursor: pointer;">Session</li>
-          </ul>
+        <div class="tagDropdown">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Add Tag/Notes
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" @click="openStudentModal" style="cursor: pointer;">Student</a>
+              <a class="dropdown-item" @click="openSessionModal" style="cursor: pointer;">Session</a>
+            </div>
+          </div>
         </div>
         <h4 class="p-3">{{ lesson.title }}</h4>
         <p>
