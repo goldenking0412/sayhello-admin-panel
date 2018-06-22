@@ -57,7 +57,7 @@
       </div>
       <div class="row mb-2">
         <div class="col-4">
-          Character's name <abbr title="Required">*</abbr>
+          Preffered System Voice<abbr title="Required">*</abbr>
         </div>
         <div class="col-8">
           <select name="character" v-validate="'required'" class="form-control" v-model="node.preffered_character">
@@ -66,6 +66,21 @@
           </select>
           <div class="invalid-feedback" v-if="errors.has('character')" style="display: block;">
             {{ errors.first('character') }}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-4">
+            Tags
+          </div>
+          <div class="col-8">
+            <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              placeholder="Add Word"
+              @tags-changed="newTags => tags = newTags"
+            />
           </div>
         </div>
       </div>
@@ -104,10 +119,11 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
+  import VueTagsInput from '@johmun/vue-tags-input';
 
   export default {
     components: {
-      Loading
+      Loading, VueTagsInput
     },
     data() {
       return {
@@ -115,11 +131,14 @@
         note: '',
         loading: false,
         isNewObject: true,
+        tag: '',
+        tags: [],
         node: {
           options: {},
           type: 'lesson',
           description: {
-          }
+          },
+          tags: []
         }
       }
     },
@@ -130,6 +149,7 @@
         if (event.params) {
           this.isNewObject = false
           this.node = event.params
+          this.tags = this.node.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
           if (!this.node.description) {
             this.node.description = {}
           }
@@ -148,6 +168,7 @@
       },
       createNode() {
         this.loading = true
+        this.node.tags = this.tags.map(tag => tag.text)
 
         this.axios.post('/v5/admin/learning_nodes', {learning_node: this.node, learning_objectives: [] })
           .then((res) => {

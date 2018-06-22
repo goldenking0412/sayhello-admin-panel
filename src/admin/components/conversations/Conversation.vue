@@ -55,7 +55,7 @@
           </div>
           <h5>{{ block.en ? block.en.text : block.title}}</h5>
           <div v-if="block.type == 'Content'" v-html="block.content"></div>
-          <div v-else>{{ block.sin.text }}</div>
+          <div v-else>{{ block.sin ? block.sin.text : ''}}</div>
           <div class="mt-4" v-if="block.instructions && block.instructions.audio">
             <audio controls style="width: 100%;">
               <source :src="block.instructions.audio" type="audio/ogg">
