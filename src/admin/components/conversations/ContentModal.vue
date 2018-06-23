@@ -4,19 +4,17 @@
     <h4 class="text-center mb-4">New Content</h4>
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
-        <label>Title <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.title" v-validate="'required'" name="title">
-        <div class="invalid-feedback" v-if="errors.has('title')" style="display: block;">
-          {{ errors.first('title') }}
-        </div>
+        <label>Title</label>
+        <input type="text" class="form-control" v-model="block.title" name="title">
       </div>
       <div class="form-group">
         <label>Text to Speak <abbr title="Required">*</abbr></label>
         <quill-editor v-model="block.content" :options="editorOptions"></quill-editor>
-        <input type="hidden" name="content" v-validate="'required'" v-model="block.content">
-        <div class="invalid-feedback" v-if="errors.has('content')" style="display: block;">
-          {{ errors.first('content') }}
-        </div>
+        <input type="hidden" name="content" v-model="block.content">
+      </div>
+      <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
       </div>
       <h5>Instructions</h5>
       <div class="form-group">
@@ -46,8 +44,10 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
+  import LearningObjectiveMixin from './learning-objective-mixin'
 
   export default {
+    mixins: [LearningObjectiveMixin],
     components: {
       Loading
     },
@@ -61,6 +61,7 @@
           modules: {
           }
         },
+        learningObjectives: [],
         node: {
           options: {},
           type: 'lesson',
@@ -72,7 +73,8 @@
           title: '',
           content: '',
           instructions: {},
-          options: {}
+          options: {},
+          evaluatable_objectives: []
         }
       }
     },
@@ -80,12 +82,19 @@
     },
     methods: {
       beforeOpen(event) {
+        this.isNewObject = true
         Object.assign(this.node, event.params.node)
         this.block = this.$options.data().block
         if (event.params.block) {
           this.block = JSON.parse(JSON.stringify(event.params.block))
           this.isNewObject = false
         }
+
+        if (this.block.evaluatable_objectives) {
+          this.learningObjectives = this.block.evaluatable_objectives.map(item => item.objective_id)
+        }
+
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -99,6 +108,8 @@
         this.loading = true
 
         let blocks = this.node.blocks
+        this.block.learning_objectives = this.learningObjectives.map(obj => obj.id)
+        this.block.evaluatable_objectives = null
 
         if (this.isNewObject) {
           blocks.push(this.block)  

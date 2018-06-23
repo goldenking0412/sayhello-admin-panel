@@ -50,6 +50,11 @@
             Notes
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#sessions-tab" role="tab" >
+            Sessions
+          </a>
+        </li>
       </ul>
 
       <div class="tab-content" style="margin-top: 20px;">
@@ -130,6 +135,50 @@
             </div>
           </div>
         </div>
+        <div class="tab-pane" id="sessions-tab" role="tabpanel">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Learning Node</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="session in sessions" :key="session.id">
+                <td>{{ session.id }}</td>
+                <td>
+                  <router-link :to="{name: 'conversations.show', params: {id: session.lesson ? session.lesson.id : null }}">
+                    {{ session.lesson ? session.lesson.title : '' }}
+                  </router-link>
+                </td>
+                <td>{{ session.status }}</td>
+                <td>{{ session.created_at | moment('DD/MM/YYYY HH:mm') }}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(session.lesson)">
+                    View
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="!sessions.length">
+                <td colspan="5">Not found any paths</td>
+              </tr>
+            </tbody>
+          </table>
+          <paginate
+            :page-count="totalSessionPages"
+            :click-handler="changeSessionPage"
+            :container-class="'pagination justify-content-end'"
+            :page-class="'page-item'"
+            :page-link-class="'page-link'"
+            :prev-class="'page-item'"
+            :prev-link-class="'page-link'"
+            :next-class="'page-item'"
+            :next-link-class="'page-link'">
+          </paginate>
+        </div>
       </div>
     </section>
     <AddNoteModal v-on:added-note="this.addedNote"/>
@@ -146,17 +195,21 @@
   import AssignEvaluatorModal from './AssignEvaluatorModal.vue'
   import SessionModal from './SessionModal.vue'
   import EditStudentModal from './EditStudentModal.vue'
+  import Paginate from 'vuejs-paginate'
 
   export default {
     components: {
       Pagination, AddNoteModal, AddLearningNodeModal, AssignEvaluatorModal,
-      SessionModal, EditStudentModal
+      SessionModal, EditStudentModal, Paginate
     },
     data() {
       return {
         student: null,
         learningNodes: [],
-        paths: []
+        paths: [],
+        sessions: [],
+        totalSessionPages: 1,
+        sessionPage: 1
       }
     },
     methods: {
@@ -190,6 +243,27 @@
 
           })
       },
+      loadSessions() {
+        this.axios.get('/v5/admin/sessions', {params: {student_id: this.$route.params.id, page: this.sessionPage} })
+          .then((res) => {
+            this.sessions = res.data.data.map(session => {
+              session.lesson = session.lesson ? session.lesson : {}
+              session.lesson.active_session_id = session.id
+              return session
+            })
+            console.log(this.sessions)
+            this.totalSessionPages = Math.ceil(res.data.total / res.data.per_page)
+          })
+          .catch((err) => {
+
+          })
+      },
+      changeSessionPage(page) {
+        if (this.sessionPage != page) {
+          this.sessionPage = page
+          this.loadSessions()
+        }
+      },
       editStudent() {
         this.$modal.show('students.edit', this.student)
       },
@@ -222,6 +296,7 @@
       this.loadStudent()
       this.loadLearningNodes()
       this.loadPaths()
+      this.loadSessions()
     }
   }
 </script>

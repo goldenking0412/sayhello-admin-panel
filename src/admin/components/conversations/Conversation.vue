@@ -23,7 +23,7 @@
             <button class="btn btn-sm btn-primary">
               Duplicate
             </button>
-            <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode(node)">
+            <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode()">
               Edit
             </button>
             <button class="btn btn-sm btn-success ml-1">
@@ -77,18 +77,20 @@
     <SystemDialogueModal v-on:added-block="addedBlock"/>
     <ContentModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
+    <AddLearningNodeModal v-on:updated-node="addedBlock"/>
   </div>
 </template>
 
 <script>
   import SystemDialogueModal from './SystemDialogueModal.vue'
+  import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import ContentModal from './ContentModal.vue'
   import UserDialogueModal from './UserDialogueModal.vue'
   import draggable from 'vuedraggable'
 
   export default {
     components: {
-      SystemDialogueModal, ContentModal, UserDialogueModal, draggable
+      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal
     },
     data() {
       return {
@@ -113,6 +115,9 @@
       },
       addedBlock(node) {
         this.node = node
+      },
+      editNode() {
+        this.$modal.show('learning-nodes.create', this.node)
       },
       editBlock(block) {
         let type = 'system-dialogue'

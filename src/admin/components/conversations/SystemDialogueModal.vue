@@ -5,28 +5,23 @@
     <p>Available merge fields: {name} {date} {time} {greetings_time}</p>
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
-        <label>Character <abbr title="Required">*</abbr></label>
-        <select name="character" v-validate="'required'" class="form-control" v-model="block.character.name">
+        <label>Character</label>
+        <select name="character" class="form-control" v-model="block.character.name">
           <option value="">-- Select --</option>
           <option :value="name" v-for="(name, index) in characters" :key="index">{{ name }}</option>
         </select>
-        <div class="invalid-feedback" v-if="errors.has('character')" style="display: block;">
-          {{ errors.first('character') }}
-        </div>
       </div>
       <div class="form-group">
-        <label>Text to Speak <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.en.text" v-validate="'required'" name="text">
-        <div class="invalid-feedback" v-if="errors.has('text')" style="display: block;">
-          {{ errors.first('text') }}
-        </div>
+        <label>Text to Speak</label>
+        <input type="text" class="form-control" v-model="block.en.text" name="text">
       </div>
       <div class="form-group">
-        <label>Sinhala Meaning <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.sin.text" v-validate="'required'" name="meaning">
-        <div class="invalid-feedback" v-if="errors.has('meaning')" style="display: block;">
-          {{ errors.first('meaning') }}
-        </div>
+        <label>Sinhala Meaning</label>
+        <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
+      </div>
+      <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
       </div>
       <h5>Instructions</h5>
       <div class="form-group">
@@ -56,8 +51,10 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
+  import LearningObjectiveMixin from './learning-objective-mixin'
 
   export default {
+    mixins: [LearningObjectiveMixin],
     components: {
       Loading
     },
@@ -79,7 +76,8 @@
           en: {},
           sin: {},
           instructions: {},
-          options: {}
+          options: {},
+          evaluatable_objectives: []
         }
       }
     },
@@ -87,6 +85,7 @@
     },
     methods: {
       beforeOpen(event) {
+        this.isNewObject = true
         Object.assign(this.node, event.params.node)
         this.block = this.$options.data().block
         if (event.params.block) {
@@ -98,7 +97,12 @@
           this.block.character.name = this.node.options.preffered_character
         }
 
+        if (this.block.evaluatable_objectives) {
+          this.learningObjectives = this.block.evaluatable_objectives.map(item => item.objective_id)
+        }
+
         this.loadCharacters()
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -112,6 +116,9 @@
         this.loading = true
 
         let blocks = this.node.blocks
+
+        this.block.learning_objectives = this.learningObjectives.map(obj => obj.id)
+        this.block.evaluatable_objectives = null
 
         if (this.isNewObject) {
           blocks.push(this.block)  
@@ -159,4 +166,4 @@
   .objectiveModal .v--modal {
     top: 50px !important
   }
-</style>
+</style

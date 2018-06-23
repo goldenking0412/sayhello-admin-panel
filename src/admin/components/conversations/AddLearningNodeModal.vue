@@ -80,7 +80,18 @@
               :tags="tags"
               placeholder="Add Word"
               @tags-changed="newTags => tags = newTags"
+              :autocomplete-items="getAutocompleteTags(tag)"
             />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-4">
+            Learning Objectives
+          </div>
+          <div class="col-8">
+            <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
           </div>
         </div>
       </div>
@@ -120,8 +131,10 @@
 <script>
   import Loading from '../../../commons/Loading.vue'
   import VueTagsInput from '@johmun/vue-tags-input';
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
       Loading, VueTagsInput
     },
@@ -134,6 +147,8 @@
         isNewObject: true,
         tag: '',
         tags: [],
+        learningObjectives: [],
+        learningObjectiveOptions: [],
         node: {
           options: {},
           type: 'lesson',
@@ -149,10 +164,16 @@
       beforeOpen(event) {
         if (event.params) {
           this.isNewObject = false
-          this.node = event.params
-          this.tags = this.node.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          this.node = JSON.parse(JSON.stringify(event.params))
+          if (this.node.tags) {
+            this.tags = this.node.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          }
           if (!this.node.description) {
             this.node.description = {}
+          }
+
+          if (this.node.evaluatable_objectives) {
+            this.learningObjectives = this.node.evaluatable_objectives.map(item => item.objective_id)
           }
         } else {
           Object.assign(this.$data, this.$options.data())
@@ -163,6 +184,7 @@
         }
 
         this.loadCharacters()
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -185,19 +207,26 @@
           this.node.image = fileInfo.cdnUrl + fileInfo.name
           this.createNode()
         }).fail((error, fileInfo) => {
+          this.loading = false
           this.$flash.notify('warning', "Can't upload image. Please try again")
         });
       },
       createNode() {
         this.loading = true
         this.node.tags = this.tags.map(tag => tag.text)
+        let apiURL = this.isNewObject ? '/v5/admin/learning_nodes' : '/v5/admin/learning_nodes/' + this.node.id
+        let successMessage = 'Node has been created successfully'
 
-        this.axios.post('/v5/admin/learning_nodes', {learning_node: this.node, learning_objectives: [] })
+        if (!this.isNewObject) {
+          successMessage = 'Node has been updated successfully'
+        }
+
+        this.axios.post(apiURL, {learning_node: this.node, learning_objectives: this.learningObjectives.map(obj => obj.id) })
           .then((res) => {
             this.loading = false
             this.$modal.hide('learning-nodes.create')
-            this.$flash.notify('success', "Node has been created successfully")
-            this.$emit('created-learning-node')
+            this.$flash.notify('success', successMessage)
+            this.isNewObject ? this.$emit('created-learning-node') : this.$emit('updated-node', res.data)
           })
           .catch((err) => {
             this.loading = false
@@ -209,7 +238,20 @@
             this.characters = res.data
           })
           .catch((err) => {
+          })
+      },
+      loadLearningObjectives() {
+        this.axios.get('/v5/admin/learning_objectives', { params: { per_page: 9999} })
+          .then((res) => {
+            this.learningObjectiveOptions = res.data.data
 
+            this.learningObjectives = this.learningObjectives.map(id => {
+              return this.learningObjectiveOptions.find((obj) => {
+                return id == obj.id
+              })
+            })
+          })
+          .catch((err) => {
           })
       },
       close() {
