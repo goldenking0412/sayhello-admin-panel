@@ -85,6 +85,16 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-4">
+            Learning Objectives
+          </div>
+          <div class="col-8">
+            <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
+          </div>
+        </div>
+      </div>
       <div class="mb-2 mt-2">
         <label class="mr-3">
           <input type="checkbox" v-model="node.options.capture_difficulty_level" value="">
@@ -137,6 +147,8 @@
         isNewObject: true,
         tag: '',
         tags: [],
+        learningObjectives: [],
+        learningObjectiveOptions: [],
         node: {
           options: {},
           type: 'lesson',
@@ -159,6 +171,10 @@
           if (!this.node.description) {
             this.node.description = {}
           }
+
+          if (this.node.evaluatable_objectives) {
+            this.learningObjectives = this.node.evaluatable_objectives.map(item => item.objective_id)
+          }
         } else {
           Object.assign(this.$data, this.$options.data())
         }
@@ -168,6 +184,7 @@
         }
 
         this.loadCharacters()
+        this.loadLearningNodes()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -198,15 +215,13 @@
         this.loading = true
         this.node.tags = this.tags.map(tag => tag.text)
         let apiURL = this.isNewObject ? '/v5/admin/learning_nodes' : '/v5/admin/learning_nodes/' + this.node.id
-        let params = {learning_node: this.node, learning_objectives: [] }
         let successMessage = 'Node has been created successfully'
 
         if (!this.isNewObject) {
-          params = this.node
           successMessage = 'Node has been updated successfully'
         }
 
-        this.axios.post(apiURL, params)
+        this.axios.post(apiURL, {learning_node: this.node, learning_objectives: this.learningObjectives.map(obj => obj.id) })
           .then((res) => {
             this.loading = false
             this.$modal.hide('learning-nodes.create')
@@ -223,7 +238,20 @@
             this.characters = res.data
           })
           .catch((err) => {
+          })
+      },
+      loadLearningNodes() {
+        this.axios.get('/v5/admin/learning_objectives', { params: { per_page: 9999} })
+          .then((res) => {
+            this.learningObjectiveOptions = res.data.data
 
+            this.learningObjectives = this.learningObjectives.map(id => {
+              return this.learningObjectiveOptions.find((obj) => {
+                return id == obj.id
+              })
+            })
+          })
+          .catch((err) => {
           })
       },
       close() {
