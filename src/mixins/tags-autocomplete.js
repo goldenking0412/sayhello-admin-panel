@@ -2,12 +2,13 @@ export default {
   data() {
     return {
       autocompleteTags: [],
-      isTagEmpty: false
+      lastSearchTag: ''
+
     }
   },
   methods: {
     loadAutocompleTags() {
-      this.axios.get('/v5/admin/tags')
+      this.axios.get('/v5/admin/tags', { params: {seach: this.lastSearchTag} })
         .then((res) => {
           if (res.data.tags.length == 0) {
             this.isTagEmpty = true
@@ -19,11 +20,12 @@ export default {
         })
     },
     getAutocompleteTags(query) {
-      if (!this.autocompleteTags.length && !this.isTagEmpty) {
+      if (query && query != this.lastSearchTag) {
+        this.lastSearchTag = query
         this.loadAutocompleTags()
       }
 
-      return this.autocompleteTags.filter(i => new RegExp(query, 'i').test(i.text))
+      return this.autocompleteTags
     }
   },
 }
