@@ -122,7 +122,7 @@
             You don't have any notes
           </div>
           <div class="mt-2" v-if="student.notes">
-            <div class="border mb-2 p-2 rounded" v-for="note in student.notes" :key="note._id.$oid">
+            <div class="border mb-2 p-2 rounded" v-for="note in student.notes" :key="note.id">
               {{ note.note }}
               <div class="text-right mt-1 text-secondary">
                 By {{ note.owner.name }}
