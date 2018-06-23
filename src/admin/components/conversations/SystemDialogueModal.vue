@@ -21,7 +21,11 @@
       </div>
       <h5>Instructions</h5>
       <div class="form-group">
-        <input type="file" class="form-control" ref="audioFile" accept="audio/*">
+        <input type="text" class="form-control" v-model="block.instructions.audio" v-validate="'url'" name="audio"
+          placeholder="Audio URL">
+        <div class="invalid-feedback" v-if="errors.has('audio')" style="display: block;">
+          {{ errors.first('audio') }}
+        </div>
       </div>
       <h5>Other options</h5>
       <div class="form-group">
@@ -90,25 +94,9 @@
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            if(this.$refs.audioFile.files.length) {
-              this.uploadAudio()
-            }else {
-              this.addBlock()
-            }
+            this.addBlock()
             return
           }
-        });
-      },
-      uploadAudio() {
-        let uploadProcess = uploadcare.fileFrom('object', this.$refs.audioFile.files[0]);
-        this.loading = true
-
-        uploadProcess.done((fileInfo) => {
-          this.block.instructions.audio = fileInfo.cdnUrl + fileInfo.name
-          this.addBlock()
-        }).fail((error, fileInfo) => {
-          this.loading = false
-          this.$flash.notify('warning', "Can't upload audio. Please try again")
         });
       },
       addBlock() {
@@ -162,4 +150,4 @@
   .objectiveModal .v--modal {
     top: 50px !important
   }
-</style>
+</style
