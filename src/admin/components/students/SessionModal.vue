@@ -9,6 +9,8 @@
             v-model="studentTag"
             :tags="studentTags"
             @tags-changed="newTags => studentTags = newTags"
+            :autocomplete-items="studentTagsHints"
+            :add-only-from-autocomplete="true"
           />
         </div>
         <div class="col-md-12 pull-right" style="padding-top: 15px; text-align: right;">
@@ -31,6 +33,8 @@
             v-model="sessionTag"
             :tags="sessionTags"
             @tags-changed="newTags => sessionTags = newTags"
+            :autocomplete-items="sessionTagsHints"
+            :add-only-from-autocomplete="true"
           />
         </div>
         <div class="col-md-12 pull-right" style="padding-top: 15px; text-align: right;">
@@ -138,7 +142,9 @@
         loadingStudentTags: false,
         loadingSessionTags: false,
         studentTags: [],
+        studentTagsHints: [],
         studentTag: '',
+        sessionTagsHints: [],
         sessionTags: [],
         sessionTag: ''
       }
@@ -168,6 +174,14 @@
             this.loadingStudentTags = false
           })
       },
+      loadStudentTagHints() {
+        this.studentTagsHints = []
+        this.axios.get('/v5/admin/tags', {params: {search: this.studentTag, context: 'Student'}})
+          .then((res) => {
+            this.studentTagsHints = res.data.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          }).catch((res) => {
+          })
+      },
       saveSessionTags () {
         this.axios.put('/v5/admin/sessions/' + this.session.id, {
           tags: this.sessionTags.map(tag => tag.text)
@@ -175,6 +189,14 @@
             this.$modal.hide('sessions.tags')
           }).catch((res) => {
             this.$modal.hide('sessions.tags')
+          })
+      },
+    loadSessionTagHints() {
+        this.sessionTagsHints = []
+        this.axios.get('/v5/admin/tags', {params: {search: this.sessionTag, context: 'Session'}})
+          .then((res) => {
+            this.sessionTagsHints = res.data.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
+          }).catch((res) => {
           })
       },
       loadSessions() {
@@ -222,6 +244,14 @@
               this.activeAudio.stop();
           this.activeAudioIndex = false;
       },
+    },
+    watch: {
+      studentTag () {
+        this.loadStudentTagHints()
+      },
+      sessionTag () {
+        this.loadSessionTagHints()
+      }
     }
   }
 </script>
