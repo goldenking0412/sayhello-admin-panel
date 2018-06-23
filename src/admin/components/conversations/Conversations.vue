@@ -23,6 +23,7 @@
               <router-link :to="{name: 'conversations.show', params: {id: node.id }}">
                 {{ node.title }}
               </router-link>
+              <span class="badge badge-primary mr-1" v-for="(tag, index) in node.tags" :key="index">{{ tag }}</span>
             </h5>
             <p v-if="node.description">
               {{ node.description.en }}
