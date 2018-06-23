@@ -184,7 +184,7 @@
         }
 
         this.loadCharacters()
-        this.loadLearningNodes()
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -240,7 +240,7 @@
           .catch((err) => {
           })
       },
-      loadLearningNodes() {
+      loadLearningObjectives() {
         this.axios.get('/v5/admin/learning_objectives', { params: { per_page: 9999} })
           .then((res) => {
             this.learningObjectiveOptions = res.data.data

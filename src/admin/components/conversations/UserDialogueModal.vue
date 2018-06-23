@@ -13,6 +13,10 @@
         <label>Sinhala Meaning</label>
         <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
       </div>
+      <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
+      </div>
       <strong>Words for blanks</strong>
       <div class="form-group">
         <vue-tags-input
@@ -80,9 +84,11 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
-  import VueTagsInput from '@johmun/vue-tags-input';
+  import VueTagsInput from '@johmun/vue-tags-input'
+  import LearningObjectiveMixin from './learning-objective-mixin'
 
   export default {
+    mixins: [LearningObjectiveMixin],
     components: {
       Loading, VueTagsInput
     },
@@ -106,7 +112,8 @@
           sin: {},
           sample_response: {},
           instructions: {},
-          options: {}
+          options: {},
+          evaluatable_objectives: []
         }
       }
     },
@@ -114,12 +121,19 @@
     },
     methods: {
       beforeOpen(event) {
+        this.isNewObject = true
         Object.assign(this.node, event.params.node)
         this.block = this.$options.data().block
         if (event.params.block) {
           this.block = JSON.parse(JSON.stringify(event.params.block))
           this.isNewObject = false
         }
+
+        if (this.block.evaluatable_objectives) {
+          this.learningObjectives = this.block.evaluatable_objectives.map(item => item.objective_id)
+        }
+
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -136,6 +150,9 @@
         let newBlock = {}
         Object.assign(newBlock, this.block)
         newBlock.fill_words = this.tags.map(tag => tag.text)
+
+        newBlock.learning_objectives = this.learningObjectives.map(obj => obj.id)
+        newBlock.evaluatable_objectives = null
 
         if (this.isNewObject) {
           blocks.push(newBlock)  

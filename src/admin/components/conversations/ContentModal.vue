@@ -12,6 +12,10 @@
         <quill-editor v-model="block.content" :options="editorOptions"></quill-editor>
         <input type="hidden" name="content" v-model="block.content">
       </div>
+      <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
+      </div>
       <h5>Instructions</h5>
       <div class="form-group">
         <input type="text" class="form-control" v-model="block.instructions.audio" v-validate="'url'" name="audio"
@@ -40,8 +44,10 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
+  import LearningObjectiveMixin from './learning-objective-mixin'
 
   export default {
+    mixins: [LearningObjectiveMixin],
     components: {
       Loading
     },
@@ -55,6 +61,7 @@
           modules: {
           }
         },
+        learningObjectives: [],
         node: {
           options: {},
           type: 'lesson',
@@ -66,7 +73,8 @@
           title: '',
           content: '',
           instructions: {},
-          options: {}
+          options: {},
+          evaluatable_objectives: []
         }
       }
     },
@@ -74,12 +82,19 @@
     },
     methods: {
       beforeOpen(event) {
+        this.isNewObject = true
         Object.assign(this.node, event.params.node)
         this.block = this.$options.data().block
         if (event.params.block) {
           this.block = JSON.parse(JSON.stringify(event.params.block))
           this.isNewObject = false
         }
+
+        if (this.block.evaluatable_objectives) {
+          this.learningObjectives = this.block.evaluatable_objectives.map(item => item.objective_id)
+        }
+
+        this.loadLearningObjectives()
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
@@ -93,6 +108,8 @@
         this.loading = true
 
         let blocks = this.node.blocks
+        this.block.learning_objectives = this.learningObjectives.map(obj => obj.id)
+        this.block.evaluatable_objectives = null
 
         if (this.isNewObject) {
           blocks.push(this.block)  
