@@ -135,9 +135,9 @@
         this.axios.get('/v5/admin/students', {params: params})
           .then((res) => {
             this.students = res.data.data
-            this.total = res.data.total
-            this.search.per_page = res.data.per_page
-            this.totalPages = Math.ceil(res.data.total / res.data.per_page)
+            this.total = res.data.meta.pagination.total
+            this.search.per_page = res.data.meta.pagination.per_page
+            this.totalPages = Math.ceil(res.data.meta.pagination.total / res.data.meta.pagination.per_page)
           })
           .catch((err) => {
 
