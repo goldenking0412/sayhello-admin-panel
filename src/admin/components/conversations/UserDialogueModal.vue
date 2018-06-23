@@ -6,18 +6,12 @@
     <form @submit.prevent="validateBeforeSubmit">
       <strong>Fully guided</strong>
       <div class="form-group">
-        <label>Text to Speak <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.en.text" v-validate="'required'" name="text">
-        <div class="invalid-feedback" v-if="errors.has('text')" style="display: block;">
-          {{ errors.first('text') }}
-        </div>
+        <label>Text to Speak</label>
+        <input type="text" class="form-control" v-model="block.en.text" name="text">
       </div>
       <div class="form-group">
-        <label>Sinhala Meaning <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.sin.text" v-validate="'required'" name="meaning">
-        <div class="invalid-feedback" v-if="errors.has('meaning')" style="display: block;">
-          {{ errors.first('meaning') }}
-        </div>
+        <label>Sinhala Meaning</label>
+        <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
       </div>
       <strong>Words for blanks</strong>
       <div class="form-group">

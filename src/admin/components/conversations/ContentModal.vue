@@ -4,19 +4,13 @@
     <h4 class="text-center mb-4">New Content</h4>
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
-        <label>Title <abbr title="Required">*</abbr></label>
-        <input type="text" class="form-control" v-model="block.title" v-validate="'required'" name="title">
-        <div class="invalid-feedback" v-if="errors.has('title')" style="display: block;">
-          {{ errors.first('title') }}
-        </div>
+        <label>Title</label>
+        <input type="text" class="form-control" v-model="block.title" name="title">
       </div>
       <div class="form-group">
         <label>Text to Speak <abbr title="Required">*</abbr></label>
         <quill-editor v-model="block.content" :options="editorOptions"></quill-editor>
-        <input type="hidden" name="content" v-validate="'required'" v-model="block.content">
-        <div class="invalid-feedback" v-if="errors.has('content')" style="display: block;">
-          {{ errors.first('content') }}
-        </div>
+        <input type="hidden" name="content" v-model="block.content">
       </div>
       <h5>Instructions</h5>
       <div class="form-group">
