@@ -42,6 +42,7 @@
         <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
         <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
         <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
+        <a class="dropdown-item" href="#" @click.prevent="addBlock('web-page')">WebPage</a>
       </div>
     </div>
 
@@ -51,10 +52,12 @@
           <div class="text-right">
             <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
             <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
+            <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
             <button class="btn btn-secondary btn-sm" v-else>Content</button>
           </div>
           <h5>{{ block.en ? block.en.text : block.title}}</h5>
           <div v-if="block.type == 'Content'" v-html="block.content"></div>
+          <div v-if="block.type == 'WebPage'" v-html="block.url"></div>
           <div v-else>{{ block.sin ? block.sin.text : ''}}</div>
           <div class="mt-4" v-if="block.instructions && block.instructions.audio">
             <audio controls style="width: 100%;">
@@ -76,6 +79,7 @@
 
     <SystemDialogueModal v-on:added-block="addedBlock"/>
     <ContentModal v-on:added-block="addedBlock"/>
+    <WebPageModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
     <AddLearningNodeModal v-on:updated-node="addedBlock"/>
   </div>
@@ -85,12 +89,13 @@
   import SystemDialogueModal from './SystemDialogueModal.vue'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import ContentModal from './ContentModal.vue'
+  import WebPageModal from './WebPageModal.vue'
   import UserDialogueModal from './UserDialogueModal.vue'
   import draggable from 'vuedraggable'
 
   export default {
     components: {
-      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal
+      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal, WebPageModal
     },
     data() {
       return {
@@ -128,6 +133,8 @@
             break;
           case 'Content':
             type = 'content'
+          case 'WebPage':
+            type = 'web-page'
             break;
           default:
             break;
