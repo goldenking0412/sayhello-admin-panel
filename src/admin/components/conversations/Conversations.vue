@@ -35,7 +35,7 @@
               <router-link class="btn btn-sm btn-info ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
                 Edit
               </router-link>
-              <button class="btn btn-sm btn-success ml-1">
+              <button class="btn btn-sm btn-success ml-1" @click="openPreviewModal(node)">
                 Preview
               </button>
             </div>
@@ -55,21 +55,24 @@
       :next-link-class="'page-link'">
     </paginate>
     <AddLearningNodeModal v-on:created-learning-node="loadLearningNodes()"/>
+    <PreviewLearningNodeModal :learningNodeId="activeNode"/>
   </div>
 </template>
 <script>
   import Paginate from 'vuejs-paginate'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
+  import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
 
   export default {
     components: {
-      Paginate, AddLearningNodeModal
+      Paginate, AddLearningNodeModal, PreviewLearningNodeModal
     },
     data() {
       return {
         learningNodes: [],
         totalPages: 0,
-        currentPage: 1
+        currentPage: 1,
+        activeNode: ''
       }
     },
     mounted() {
@@ -94,6 +97,10 @@
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')
+      },
+      openPreviewModal(node) {
+        this.activeNode = node.id
+        this.$modal.show('learning-nodes.preview')
       }
     }
   }
