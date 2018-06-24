@@ -74,7 +74,7 @@
                 <td>{{ node.status }}</td>
                 <td>{{ node.created_at | moment('DD/MM/YYYY') }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node)">
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node.active_session_id)">
                     View
                   </button>
                 </td>
@@ -106,7 +106,7 @@
                 <td>{{ node.status }}</td>
                 <td>{{ node.created_at | moment('DD/MM/YYYY') }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node)">
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(node.active_session_id)">
                     View
                   </button>
                 </td>
@@ -157,7 +157,7 @@
                 <td>{{ session.status }}</td>
                 <td>{{ session.created_at | moment('DD/MM/YYYY HH:mm') }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(session.lesson)">
+                  <button class="btn btn-sm btn-primary" @click.prevent="showSession(session.id)">
                     View
                   </button>
                 </td>
@@ -246,12 +246,7 @@
       loadSessions() {
         this.axios.get('/v5/admin/sessions', {params: {student_id: this.$route.params.id, page: this.sessionPage} })
           .then((res) => {
-            this.sessions = res.data.data.map(session => {
-              session.lesson = session.lesson ? session.lesson : {}
-              session.lesson.active_session_id = session.id
-              return session
-            })
-            console.log(this.sessions)
+            this.sessions = res.data.data
             this.totalSessionPages = Math.ceil(res.data.total / res.data.per_page)
           })
           .catch((err) => {

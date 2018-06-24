@@ -134,6 +134,7 @@
     data() {
       return {
         session: null,
+        sessionId: null,
         lesson: null,
         loading: false,
         processing: false,
@@ -151,7 +152,7 @@
     },
     methods: {
       beforeOpen(event) {
-        this.node = event.params
+        this.sessionId = event.params
         this.loadSessions()
       },
       saveStudentTags () {
@@ -201,7 +202,7 @@
       },
       loadSessions() {
         this.loading = true
-        this.axios.get('/v5/admin/learning_nodes/sessions/' + this.node.active_session_id)
+        this.axios.get('/v5/admin/learning_nodes/sessions/' + this.sessionId)
           .then((res) => {
             this.loading = false
             this.session = res.data.session
