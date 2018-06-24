@@ -226,7 +226,11 @@
             this.loading = false
             this.$modal.hide('learning-nodes.create')
             this.$flash.notify('success', successMessage)
-            this.isNewObject ? this.$emit('created-learning-node') : this.$emit('updated-node', res.data)
+            if (this.isNewObject) {
+              this.$router.push({ name: 'conversations.show', params: {id: res.data.id}})
+            } else {
+              this.$emit('updated-node', res.data)
+            }
           })
           .catch((err) => {
             this.loading = false
