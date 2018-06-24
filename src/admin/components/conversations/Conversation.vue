@@ -27,7 +27,7 @@
             <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode()">
               Edit
             </button>
-            <button class="btn btn-sm btn-success ml-1">
+            <button class="btn btn-sm btn-success ml-1" @click="showPreviewModal">
               Preview
             </button>
           </div>
@@ -83,6 +83,7 @@
     <WebPageModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
     <AddLearningNodeModal v-on:updated-node="addedBlock"/>
+    <PreviewLearningNodeModal :learningNodeId="node.id"/>
   </div>
 </template>
 
@@ -92,11 +93,12 @@
   import ContentModal from './ContentModal.vue'
   import WebPageModal from './WebPageModal.vue'
   import UserDialogueModal from './UserDialogueModal.vue'
+  import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
   import draggable from 'vuedraggable'
 
   export default {
     components: {
-      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal, WebPageModal
+      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal, WebPageModal, PreviewLearningNodeModal
     },
     data() {
       return {
@@ -160,6 +162,9 @@
           })
           .catch((err) => {
           })
+      },
+      showPreviewModal() {
+        this.$modal.show('learning-nodes.preview')
       }
     }
   }
