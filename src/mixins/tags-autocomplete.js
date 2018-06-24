@@ -8,7 +8,7 @@ export default {
   },
   methods: {
     loadAutocompleTags() {
-      this.axios.get('/v5/admin/tags', { params: {seach: this.lastSearchTag} })
+      this.axios.get('/v5/admin/tags', { params: {search: this.lastSearchTag} })
         .then((res) => {
           if (res.data.tags.length == 0) {
             this.isTagEmpty = true

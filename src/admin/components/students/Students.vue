@@ -34,6 +34,7 @@
               v-model="tag"
               :tags="tags"
               @tags-changed="newTags => tags = newTags"
+              :autocomplete-items="getAutocompleteTags(tag)"
             />
         </div>
       </div>
@@ -98,8 +99,10 @@
 <script>
   import Paginate from 'vuejs-paginate'
   import VueTagsInput from '@johmun/vue-tags-input'
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
       Paginate,
       VueTagsInput
