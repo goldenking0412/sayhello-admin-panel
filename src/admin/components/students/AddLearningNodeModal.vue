@@ -58,7 +58,7 @@
         });
       },
       loadLearningNodes() {
-        this.axios.get('/v5/admin/learning_nodes', {params: {perpage: 9999}})
+        this.axios.get('/v5/admin/learning_nodes', {params: {per_page: 9999}})
           .then((res) => {
             this.learningNodes = res.data.data;
           })
