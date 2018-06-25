@@ -46,7 +46,7 @@ main {
 .objectiveModal {
     .v--modal {
         height: initial !important;
-        overflow: initial;
+        overflow: initial !important;
     }
     .close{
         position: absolute;
