@@ -5,11 +5,10 @@ export default function middleware (router) {
     let token = localStorage.getItem('access_token')
     let requiredLogin = to.matched.some(record => record.meta.requiredLogin)
     let requiredPermission = []
-    to.matched.forEach(record => {
-      if (record.meta.requiredPermission) {
-        requiredPermission.push(...record.meta.requiredPermission);
-      }
-    });
+
+    if (to.meta.requiredPermission) {
+      requiredPermission = to.meta.requiredPermission;
+    }
 
     if(token && !window.user) {
       axios.get('v5/me')
@@ -32,7 +31,7 @@ export default function middleware (router) {
     }else {
       if(requiredLogin) {
         if(window.user) {
-          if(window.user.role == requiredPermission) {
+          if(!requiredPermission.length || requiredPermission.find(permission => permission === window.user.role)) {
             next()
           }else {
             next({
