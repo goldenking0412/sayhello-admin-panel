@@ -55,7 +55,7 @@
       :next-class="'page-item'"
       :next-link-class="'page-link'">
     </paginate>
-    <AddLearningNodeModal v-on:created-learning-node="loadLearningNodes()"/>
+    <AddLearningNodeModal />
     <PreviewLearningNodeModal :learningNodeId="activeNode"/>
   </div>
 </template>
