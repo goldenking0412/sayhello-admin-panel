@@ -5,12 +5,18 @@ const routes = [
     {
         path: 'conversations',
         name: 'conversations.index',
-        component: Conversations
+        component: Conversations,
+        meta: {
+            requiredPermission: ['Admin']
+        }
     },
     {
         path: 'conversations/:id',
         name: 'conversations.show',
-        component: Conversation
+        component: Conversation,
+        meta: {
+            requiredPermission: ['Admin']
+        }
     }]
 
 export default routes
