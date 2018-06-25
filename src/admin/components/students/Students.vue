@@ -131,7 +131,9 @@
         let params = {}
         let tagsSearch = this.tags.map(tag => tag.text).join(',')
         Object.assign(params, this.search)
-        params.search = params.search.length > 0 ? `${params.search},${tagsSearch}` : tagsSearch
+        if (tagsSearch) {
+          params.search = params.search.length > 0 ? `${params.search},${tagsSearch}` : tagsSearch
+        }
         params.took_learning_node = params.took_learning_node ? params.took_learning_node : null
         params.learning_node_status = params.learning_node_status ? params.learning_node_status : null
 
