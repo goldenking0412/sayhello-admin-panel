@@ -15,38 +15,55 @@ const routes = [{
         {
             path: 'evaluators/evaluate',
             name: 'evaluation.evaluate',
-            component: Evaluate
+            component: Evaluate,
+            meta: {
+                requiredPermission: ['Admin', 'Evaluator']
+            }
         },
         {
             path: 'evaluators/precheck',
             name: 'evaluation.precheck',
-            component: Precheck
+            component: Precheck,
+            meta: {
+                requiredPermission: ['Admin']
+            }
         },
         {
             path: 'sessions/searches',
             name: 'sessions.searches',
-            component: SessionSearch
+            component: SessionSearch,
+            meta: {
+                requiredPermission: ['Admin']
+            }
         },
         {
             path: 'learning/objectives',
             name: 'learning.objectives',
-            component: LearningObjectives
+            component: LearningObjectives,
+            meta: {
+                requiredPermission: ['Admin']
+            }
         },
         {
             path: 'students',
             name: 'students.index',
-            component: Students
+            component: Students,
+            meta: {
+                requiredPermission: ['Admin']
+            }
         },
         {
             path: '/students/:id',
             name: 'students.show',
-            component: Student
+            component: Student,
+            meta: {
+                requiredPermission: ['Admin']
+            }
         },
         ...conversations
     ],
     meta: {
-        requiredLogin: true,
-        requiredPermission: 'Admin'
+        requiredLogin: true
     },
 }]
 
