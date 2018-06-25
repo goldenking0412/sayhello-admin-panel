@@ -100,7 +100,7 @@
               <td>{{ session.status }}</td>
               <td>{{ session.created_at | moment("DD/MM/YYYY hh:mm") }}</td>
               <td>
-                <button class="btn btn-sm btn-primary" @click.prevent="showSession(session)">
+                <button class="btn btn-sm btn-primary" @click.prevent="showSession(session.id)">
                   View
                 </button>
               </td>
