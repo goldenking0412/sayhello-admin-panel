@@ -68,7 +68,8 @@
         <div class="sessionContent">
           <h6>Student</h6>
           <h3>{{ session.student.name }}</h3>
-          <h3><small>{{ session.student.id }}</small></h3>
+          <h3><small>Student ID - {{ session.student.id }}</small></h3>
+          <h3><small>Session ID - {{ session.id }}</small></h3>
           <hr>
           <div v-for="(block, blockIndex) in session.lesson.blocks" class="card">
             <div class="card-body">
