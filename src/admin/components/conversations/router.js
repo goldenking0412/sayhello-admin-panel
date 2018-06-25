@@ -3,12 +3,12 @@ import Conversations from './Conversations.vue'
 
 const routes = [
     {
-        path: '/conversations',
+        path: 'conversations',
         name: 'conversations.index',
         component: Conversations
     },
     {
-        path: '/conversations/:id',
+        path: 'conversations/:id',
         name: 'conversations.show',
         component: Conversation
     }]
