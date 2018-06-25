@@ -8,6 +8,31 @@
         <button class="btn btn-success" @click.prevent="addLearningNode()">New Conversation</button>
       </div>
     </div>
+    <hr>
+    <h4>Search</h4>
+    <div class="row">
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label for="">Status:</label>
+          <v-select multiple v-model="search.statuses" :options="['active', 'draft', 'archived']"></v-select>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label>Tags:</label>
+          <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              @tags-changed="newTags => tags = newTags"
+              :autocomplete-items="getAutocompleteTags(tag)"
+            />
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <label style="width: 100%;">&nbsp;</label>
+        <button class="btn btn-primary" @click.prevent="loadLearningNodes()">Search</button>
+      </div>
+    </div>
     <div class="listConversations mt-4">
       <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
         <div class="row">
@@ -44,6 +69,9 @@
         </div>
       </div>
     </div>
+    <div class="emptyList" v-if="!learningNodes.length">
+      Not found any Learning Nodes
+    </div>
     <paginate
       :page-count="totalPages"
       :click-handler="changePage"
@@ -63,17 +91,25 @@
   import Paginate from 'vuejs-paginate'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
+  import VueTagsInput from '@johmun/vue-tags-input'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
-      Paginate, AddLearningNodeModal, PreviewLearningNodeModal
+      Paginate, AddLearningNodeModal, PreviewLearningNodeModal, VueTagsInput
     },
     data() {
       return {
         learningNodes: [],
         totalPages: 0,
-        currentPage: 1,
-        activeNode: ''
+        activeNode: '',
+        tag: '',
+        tags: [],
+        search: {
+          page: 1
+        },
+        tags: []
       }
     },
     mounted() {
@@ -81,7 +117,8 @@
     },
     methods: {
       loadLearningNodes() {
-        this.axios.get('/v5/admin/learning_nodes', {params: {page: this.currentPage}})
+        this.search.tags = this.tags.map(tag => tag.text)
+        this.axios.get('/v5/admin/learning_nodes', {params: this.search})
           .then((res) => {
             this.learningNodes = res.data.data
             this.totalPages = Math.ceil(res.data.total / res.data.per_page)
@@ -91,8 +128,8 @@
           })
       },
       changePage(page) {
-        if(page != this.currentPage) {
-          this.currentPage = page
+        if(page != this.search.page) {
+          this.search.page = page
           this.loadLearningNodes()
         }
       },
