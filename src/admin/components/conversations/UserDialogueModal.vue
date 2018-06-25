@@ -126,6 +126,7 @@
         this.block = this.$options.data().block
         if (event.params.block) {
           this.block = JSON.parse(JSON.stringify(event.params.block))
+          this.tags = this.block.fill_words.map(tag => { return {text: tag}})
           this.isNewObject = false
         }
 
