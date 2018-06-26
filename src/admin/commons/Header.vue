@@ -10,6 +10,9 @@
         <li class="nav-item">
           <router-link class="nav-link" :to="{name: 'evaluation.evaluate'}">Evaluate</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{name: 'students.index'}">Students</router-link>
+        </li>
         <template v-if="currentUser.role !== 'Evaluator'">
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'evaluation.precheck'}">Precheck</router-link>
@@ -20,9 +23,7 @@
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'learning.objectives'}">Learning Objectives</router-link>
           </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'students.index'}">Students</router-link>
-          </li>
+          
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'conversations.index'}">Conversations</router-link>
           </li>
