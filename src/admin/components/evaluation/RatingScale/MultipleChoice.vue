@@ -14,13 +14,11 @@
 export default {
     props: ['value', 'choices'],
     created() {
-        console.log(this.choices);
-        // if (typeof this.value == "undefined")
-        //     this.inputVal = true;
+        
     },
     data() {
         return { 
-            selectedVal: false,
+            selectedVal: this.value,
             inputVal: this.value
         }
     },

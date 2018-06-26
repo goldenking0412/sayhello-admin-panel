@@ -102,15 +102,15 @@
             <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
 
             <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
-              <star-rating v-model="evaluateObj.rating"></star-rating>
+              <star-rating v-model="evaluateObj.evaluated_data.rating"></star-rating>
             </div>
 
             <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                <yes-no v-model="evaluateObj.condition_met"></yes-no>
+                <yes-no v-model="evaluateObj.evaluated_data.choice"></yes-no>
             </div>
 
             <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
-              <multiple-choice v-model="evaluateObj.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
+              <multiple-choice v-model="evaluateObj.evaluated_data.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
             </div>
           </div>
         </div>
@@ -208,6 +208,11 @@
             this.loading = false
             this.session = res.data.session
             this.lesson = res.data.lesson
+            this.lesson.evaluatable_objectives.map(obj => {
+              obj.evaluated_data = obj.evaluated_data ? obj.evaluated_data : {}
+
+              return obj
+            })
             this.sessionTags = res.data.session.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
           })
           .catch((res) => {
