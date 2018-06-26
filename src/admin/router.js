@@ -49,7 +49,7 @@ const routes = [{
             name: 'students.index',
             component: Students,
             meta: {
-                requiredPermission: ['Admin']
+                requiredPermission: ['Admin', 'Evaluator']
             }
         },
         {
@@ -57,7 +57,7 @@ const routes = [{
             name: 'students.show',
             component: Student,
             meta: {
-                requiredPermission: ['Admin']
+                requiredPermission: ['Admin', 'Evaluator']
             }
         },
         ...conversations
