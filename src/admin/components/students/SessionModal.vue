@@ -114,13 +114,20 @@
             </div>
           </div>
         </div>
+        <div class="text-center mt-1 mb-1 border-top pt-1">
+          <button class="btn btn-danger" @click.prevent="rejectSession()">
+            Reject
+          </button>
+        </div>
       </div>
       <Loading v-if="loading"/>
+      <RejectSessionModal />
     </modal>
   </div>
 </template>
 
 <script>
+  import RejectSessionModal from './RejectSessionModal.vue'
   import Loading from '../../../commons/Loading.vue'
   import MultipleChoice from '../evaluation/RatingScale/MultipleChoice'
   import YesNo from '../evaluation/RatingScale/YesNo'
@@ -130,7 +137,8 @@
 
   export default {
     components: {
-      Loading, MultipleChoice, 'yes-no': YesNo, StarRating, VueTagsInput
+      Loading, MultipleChoice, 'yes-no': YesNo, StarRating, VueTagsInput,
+      RejectSessionModal
     },
     data() {
       return {
@@ -193,7 +201,7 @@
             this.$modal.hide('sessions.tags')
           })
       },
-    loadSessionTagHints() {
+      loadSessionTagHints() {
         this.sessionTagsHints = []
         this.axios.get('/v5/admin/tags', {params: {search: this.sessionTag, context: 'Session'}})
           .then((res) => {
@@ -228,6 +236,9 @@
       },
       closeSessionModal() {
         this.$modal.hide('sessions.tags');
+      },
+      rejectSession() {
+        this.$modal.show('sessions.reject', this.session.id)
       },
       playAudio(index) {
         if (this.activeAudio)

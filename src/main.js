@@ -14,6 +14,7 @@ import VueMoment from 'vue-moment'
 import VeeValidate from 'vee-validate'
 import VueQuillEditor from 'vue-quill-editor'
 import vSelect from 'vue-select'
+import Loading from './commons/Loading'
 
 // require styles
 import 'quill/dist/quill.core.css'
@@ -35,6 +36,7 @@ axios.defaults.baseURL = ENV.BASE_URL
 axios.defaults.headers['Authorization'] = 'Bearer ' + localStorage.getItem('access_token')
 
 Vue.component('v-select', vSelect)
+Vue.component('loading', Loading)
 Vue.use(VueFlash)
 Vue.use(Router)
 Vue.use(VModal)
