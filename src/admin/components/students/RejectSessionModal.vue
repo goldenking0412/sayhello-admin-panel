@@ -4,7 +4,7 @@
       <h4 class="text-center mb-4">Reject session</h4>
       <form @submit.prevent="validateBeforeSubmit">
         <div class="form-group">
-          <label>Status:</label>
+          <label>Reason:</label>
           <select name="reason" v-validate="'required'" class="form-control" v-model="params.reason"
             :class="{'is-invalid': errors.has('reason') }">
             <option value="" selected>-- Select reason --</option>
