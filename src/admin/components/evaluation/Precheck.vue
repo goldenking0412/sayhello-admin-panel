@@ -6,8 +6,12 @@
 
         <div v-if="evaluation">
             <h6>Student</h6>
-            <h3><small>{{ evaluation.session.student.id }}</small></h3>
-            <h3><small>{{ evaluation.session.id }}</small></h3>
+            <h3>Student ID: <small>{{ evaluation.session.student.id }}</small></h3>
+            <h3>Session ID: <small>{{ evaluation.session.id }}</small></h3>
+            <p>
+                <span class="badge badge-danger" v-if="!evaluation.session.student.can_communicate">No Communication</span>
+                <span class="badge badge-success" v-if="evaluation.session.student.can_communicate">Has Communication</span>
+            </p>
             <hr>
             <h4>{{ evaluation.lesson.title }}</h4>
             <hr>
