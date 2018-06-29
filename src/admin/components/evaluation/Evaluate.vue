@@ -173,8 +173,8 @@ export default {
                     if (ratingScaleData !== false) {
                         payload.block_evaluations.push({
                             objective_id: lo.objective_id,
-                            block_id: block.block_id,
-                            response_id: block.response_id,
+                            block_id: block.id,
+                            response_id: _.get(block, 'response.id'),
                             data: ratingScaleData
                         });
                     }
