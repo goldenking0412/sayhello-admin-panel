@@ -285,6 +285,7 @@
       },
       addedLearningNode(student) {
         this.loadLearningNodes()
+        this.loadPaths()
       }
     },
     mounted() {
