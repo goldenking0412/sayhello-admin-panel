@@ -71,30 +71,7 @@
           <h3><small>Student ID - {{ session.student.id }}</small></h3>
           <h3><small>Session ID - {{ session.id }}</small></h3>
           <hr>
-          <div v-for="(block, blockIndex) in session.lesson.blocks" class="card">
-            <div class="card-body">
-              <h4>{{ block.question.en }}</h4>
-              <button v-if="activeAudioIndex !== blockIndex" class="btn btn-primary" @click="playAudio(blockIndex)">Play</button>
-              <button v-if="activeAudioIndex === blockIndex" class="btn btn-danger" @click="stopAudio()">Stop</button>
-              <hr>
-              <div
-                v-for="(blockEvaluateObj, blockEvaluateObjIndex) in block.evaluatable_objectives">
-                <h5 class="text-info">{{ $lodash.get(blockEvaluateObj, 'evaluation_config.question') }}</h5>
-
-                <div style="margin-bottom: 10px" v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
-                  <star-rating v-model="blockEvaluateObj.rating"></star-rating>
-                </div>
-
-                <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                  <yes-no v-model="blockEvaluateObj.condition_met"></yes-no>
-                </div>
-
-                <div v-if="blockEvaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
-                  <multiple-choice v-model="blockEvaluateObj.choice" :choices="blockEvaluateObj.evaluation_config.choices"></multiple-choice>
-                </div>
-              </div>
-            </div>
-          </div>
+          <BlocksContainer v-bind:blocks="session.lesson.blocks"/>
           <hr>
           <h2 class="text-center">Overall Feedback</h2>
           <div v-for="(evaluateObj, evaluateObjIndex) in lesson.evaluatable_objectives" :key="evaluateObj.id">
@@ -127,10 +104,12 @@
   import StarRating from 'vue-star-rating'
   import {Howl, Howler} from 'howler'
   import VueTagsInput from '@johmun/vue-tags-input'
+  import BlocksContainer from '../../../commons/blocks/BlocksContainer.vue'
 
   export default {
     components: {
-      Loading, MultipleChoice, 'yes-no': YesNo, StarRating, VueTagsInput
+      Loading, MultipleChoice, 'yes-no': YesNo, StarRating, VueTagsInput,
+      BlocksContainer
     },
     data() {
       return {
@@ -207,7 +186,7 @@
           .then((res) => {
             this.loading = false
             this.session = res.data.session
-            this.lesson = res.data.lesson
+            this.lesson = res.data.session.lesson
             this.lesson.evaluatable_objectives.map(obj => {
               obj.evaluated_data = obj.evaluated_data ? obj.evaluated_data : {}
 
