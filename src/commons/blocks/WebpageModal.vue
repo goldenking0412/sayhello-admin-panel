@@ -1,6 +1,6 @@
 <template>
   <modal name="blocks.webpage" class="webpageModal" @before-open="beforeOpen"
-    :width="'80%'" :height="'90vh'">
+    :width="'80%'">
     <iframe width="100%" :src="block.url" frameborder="0"></iframe>
   </modal>
 </template>
@@ -27,6 +27,7 @@
 <style>
   .webpageModal .v--modal {
     top: 5vh !important;
+    height: 90vh !important;
   }
 </style>
 

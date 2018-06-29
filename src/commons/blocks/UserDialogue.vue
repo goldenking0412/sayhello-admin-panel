@@ -54,11 +54,15 @@
         </div>
       </div>
     </div>
+    <EvaluatorObjectives v-bind:block="block" />
   </div>
 </template>
 <script>
+  import EvaluatorObjectives from './EvaluatorObjectives.vue'
+
   export default {
     props: ['block'],
+    components: { EvaluatorObjectives },
     mounted() {
     },
   }
