@@ -75,6 +75,18 @@
           <hr>
           <h2 class="text-center">Overall Feedback</h2>
           <div v-for="(evaluateObj, evaluateObjIndex) in lesson.evaluatable_objectives" :key="evaluateObj.id">
+            <div v-if="evaluateObj.evaluated_data && evaluateObj.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
+              <h5 class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
+              <p>
+                <strong>Notes:</strong> {{ evaluateObj.evaluated_data.feedback_notes }} <br>
+                <strong>Suggestions:</strong> {{ evaluateObj.evaluated_data.feedback_suggestions }}
+              </p>
+              <div v-if="evaluateObj.evaluated_data.audio" class="mb-2">
+                <audio controls style="width: 100%;">
+                  <source :src="evaluateObj.evaluated_data.audio" type="audio/mpeg">
+                </audio>
+              </div>
+            </div>
             <h5 v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'"class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
             <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
 
