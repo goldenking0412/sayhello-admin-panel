@@ -138,7 +138,11 @@
         let params = {}
         Object.assign(params, this.search)
         params.tags = this.tags.map(tag => tag.text)
-        
+        Object.keys(params).map(key => {
+          if(!params[key]) {
+            params[key] = null
+          }
+        })
 
         this.axios.get('/v5/admin/students', {params: params})
           .then((res) => {
