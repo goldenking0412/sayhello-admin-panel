@@ -76,7 +76,9 @@
           en: {},
           sin: {},
           instructions: {},
-          options: {},
+          options: {
+            automatic_next: true
+          },
           evaluatable_objectives: []
         }
       }
