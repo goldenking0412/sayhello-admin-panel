@@ -48,7 +48,7 @@
       </div>
       <Loading v-if="loadingSessionTags"/>
     </modal>
-    <modal name="students.session" class="sessionModal" @before-open="beforeOpen" :width="'80%'">
+    <modal name="students.session" class="sessionModal" @before-open="beforeOpen" :width="'80%'" @before-close="beforeClose">
       <div v-if="lesson" class="modalBody">
         <div class="tagDropdown">
           <div class="dropdown">
@@ -242,6 +242,9 @@
               this.activeAudio.stop();
           this.activeAudioIndex = false;
       },
+      beforeClose(event) {
+        this.stopAudio()
+      }
     },
     watch: {
       studentTag () {
