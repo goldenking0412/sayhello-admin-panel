@@ -4,30 +4,34 @@
     <hr>
     <h4>Search</h4>
     <div class="row">
-      <div class="col-sm-3">
+      <div class="col-sm-4">
         <div class="form-group">
-            General search
-          <input type="text" class="form-control" v-model="search.search" placeholder="By name, email, phone">
+          <label for="">Name</label>
+          <input type="text" class="form-control" v-model="search.name">
         </div>
       </div>
-      <div class="col-sm-5">
-        Took learning node
-        <select v-model="search.took_learning_node" class="form-control">
-          <option value="" selected></option>
-          <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
-        </select>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="">Email</label>
+          <input type="text" class="form-control" v-model="search.email">
+        </div>
       </div>
       <div class="col-sm-4">
-        Learning node status
-          <select v-model="search.learning_node_status" class="form-control">
-            <option value="" selected></option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-            <option value="evaluation_pending">Evaluation Pending</option>
-            <option value="completed">Complete</option>
-          </select>
+        <div class="form-group">
+          <label for="">Phone</label>
+          <input type="text" class="form-control" v-model="search.phone">
+        </div>
       </div>
-      <div class="col-sm-3">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Took learning node</label>
+          <select v-model="search.took_learning_node" class="form-control">
+            <option value="" selected></option>
+            <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
         <div class="form-group">
           <label>Tags:</label>
           <vue-tags-input
@@ -116,10 +120,13 @@
         total: 0,
         totalPages: 0,
         search: {
+          tags: [],
           per_page: 50,
           page: 1,
-          search: '',
-          took_learning_node: ''
+          name: null,
+          email: null,
+          phone: null,
+          took_learning_node: null
         }
       }
     },
@@ -129,13 +136,9 @@
       },
       loadStudents() {
         let params = {}
-        let tagsSearch = this.tags.map(tag => tag.text).join(',')
         Object.assign(params, this.search)
-        if (tagsSearch) {
-          params.search = params.search.length > 0 ? `${params.search},${tagsSearch}` : tagsSearch
-        }
-        params.took_learning_node = params.took_learning_node ? params.took_learning_node : null
-        params.learning_node_status = params.learning_node_status ? params.learning_node_status : null
+        params.tags = this.tags.map(tag => tag.text)
+        
 
         this.axios.get('/v5/admin/students', {params: params})
           .then((res) => {
