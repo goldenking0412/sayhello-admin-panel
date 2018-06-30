@@ -98,6 +98,10 @@ main {
     }
 }
 
+.commonModal .v--modal {
+    height: initial !important;
+}
+
 .v--modal-overlay {
     overflow: auto !important;
 }
