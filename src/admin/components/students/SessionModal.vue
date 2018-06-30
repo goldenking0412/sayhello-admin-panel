@@ -48,7 +48,7 @@
       </div>
       <Loading v-if="loadingSessionTags"/>
     </modal>
-    <modal name="students.session" class="sessionModal" @before-open="beforeOpen">
+    <modal name="students.session" class="sessionModal" @before-open="beforeOpen" :width="'80%'">
       <div v-if="lesson" class="modalBody">
         <div class="tagDropdown">
           <div class="dropdown">
