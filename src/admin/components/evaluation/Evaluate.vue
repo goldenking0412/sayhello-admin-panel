@@ -4,7 +4,14 @@
       No sessions to evaluate
     </p>
     <div v-if="session">
-      <h2>Evaluate</h2>
+      <div class="row">
+        <div class="col-6">
+          <h2>Evaluate</h2>
+        </div>
+        <div class="col-6 text-right">
+          <button class="btn btn-primary" @click="viewStudent()">View Student</button>
+        </div>
+      </div>
       <hr>
       <h3>{{ session.student.name }}</h3>
       <p>
@@ -61,6 +68,7 @@
           <button class="btn btn-primary" @click="submit()">Submit</button>
         </div>
       </div>
+      <StudentModal />
     </div>
 </template>
 <script>
@@ -73,6 +81,7 @@ import StarRating from 'vue-star-rating'
 import AudioRecorder from './helpers/AudioRecorder'
 import {getRatingScaleData} from './helpers/RatingScalesHelper'
 import BlocksContainer from '../../../commons/blocks/BlocksContainer.vue'
+import StudentModal from '../students/StudentModal.vue'
 
 export default {
   data() {
@@ -114,9 +123,12 @@ export default {
       StarRating,
       MultipleChoice,
       'yes-no': YesNo,
-      BlocksContainer
+      BlocksContainer, StudentModal
     },
     methods: {
+      viewStudent() {
+        this.$modal.show('students.show', this.session.student.id)
+      },
         playAudio(index) {
             if (this.activeAudio)
                 this.activeAudio.stop();
