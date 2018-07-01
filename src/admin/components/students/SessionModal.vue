@@ -49,6 +49,9 @@
       <Loading v-if="loadingSessionTags"/>
     </modal>
     <modal name="students.session" class="sessionModal" @before-open="beforeOpen" :width="'80%'" @before-close="beforeClose">
+      <button class="btn btn-close" @click.prevent="closeModal()">
+        X
+      </button>
       <div v-if="lesson" class="modalBody">
         <div class="tagDropdown">
           <div class="dropdown">
@@ -221,6 +224,9 @@
       },
       close() {
         this.$modal.hide('students.addNote');
+      },
+      closeModal() {
+        this.$modal.hide('students.session');
       },
       openStudentModal() {
         this.$modal.show('students.tags');
