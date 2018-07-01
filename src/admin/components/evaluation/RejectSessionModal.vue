@@ -1,5 +1,5 @@
 <template>
-  <modal name="sessions.reject" class="commonModal" @before-open="beforeOpen">
+  <modal name="precheck.reject" class="commonModal" @before-open="beforeOpen">
     <div class="p-4">
       <h4 class="text-center mb-4">Reject session</h4>
       <form @submit.prevent="validateBeforeSubmit">
@@ -77,6 +77,7 @@
             this.loading = false
             this.close()
             this.$flash.notify('success', 'Session has been rejected successfully')
+            this.$emit('session-rejected')
           })
           .catch((res) => {
             this.$flash.notify('success', 'Can\'t reject session. Please try again')
@@ -84,7 +85,7 @@
           })
       },
       close() {
-        this.$modal.hide('sessions.reject');
+        this.$modal.hide('precheck.reject');
       }
     }
   }
