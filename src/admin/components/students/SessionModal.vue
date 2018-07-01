@@ -71,44 +71,46 @@
           <h3><small>Student ID - {{ session.student.id }}</small></h3>
           <h3><small>Session ID - {{ session.id }}</small></h3>
           <hr>
-          <BlocksContainer v-bind:blocks="session.lesson.blocks"/>
+          <BlocksContainer v-bind:readonly="true" v-bind:blocks="session.lesson.blocks"/>
           <hr>
           <h2 class="text-center">Overall Feedback</h2>
           <div v-for="(evaluateObj, evaluateObjIndex) in lesson.evaluatable_objectives" :key="evaluateObj.id">
-            <div v-if="evaluateObj.evaluated_data && evaluateObj.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
-              <h5 class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
-              <p>
-                <strong>Notes:</strong> {{ evaluateObj.evaluated_data.feedback_notes }} <br>
-                <strong>Suggestions:</strong> {{ evaluateObj.evaluated_data.feedback_suggestions }}
-              </p>
-              <div v-if="evaluateObj.evaluated_data.audio" class="mb-2">
-                <audio controls style="width: 100%;">
+            <div v-if="evaluateObj.evaluated_data">
+              <div v-if="evaluateObj.evaluated_data && evaluateObj.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
+                <h5 class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
+                <p>
+                  <strong>Notes:</strong> {{ evaluateObj.evaluated_data.feedback_notes }} <br>
+                  <strong>Suggestions:</strong> {{ evaluateObj.evaluated_data.feedback_suggestions }}
+                </p>
+                <div v-if="evaluateObj.evaluated_data.audio" class="mb-2">
+                  <audio controls style="width: 100%;">
+                    <source :src="evaluateObj.evaluated_data.audio" type="audio/mpeg">
+                  </audio>
+                </div>
+              </div>
+              <h5 v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'"class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
+              <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
+
+              <div v-if="evaluateObj.evaluated_data.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
+                <h5 class="text-info">{{ evaluateObj.description.en }}</h5>
+                <p>{{ evaluateObj.evaluated_data.feedback_notes }}</p>
+                <audio controls v-if="evaluateObj.evaluated_data.audio">
                   <source :src="evaluateObj.evaluated_data.audio" type="audio/mpeg">
+                  Your browser does not support the audio element.
                 </audio>
               </div>
-            </div>
-            <h5 v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'"class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
-            <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
 
-            <div v-if="evaluateObj.evaluated_data.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
-              <h5 class="text-info">{{ evaluateObj.description.en }}</h5>
-              <p>{{ evaluateObj.evaluated_data.feedback_notes }}</p>
-              <audio controls v-if="evaluateObj.evaluated_data.audio">
-                <source :src="evaluateObj.evaluated_data.audio" type="audio/mpeg">
-                Your browser does not support the audio element.
-              </audio>
-            </div>
+              <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
+                <star-rating v-model="evaluateObj.evaluated_data.rating"></star-rating>
+              </div>
 
-            <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
-              <star-rating v-model="evaluateObj.evaluated_data.rating"></star-rating>
-            </div>
+              <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
+                  <yes-no v-model="evaluateObj.evaluated_data.choice"></yes-no>
+              </div>
 
-            <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                <yes-no v-model="evaluateObj.evaluated_data.choice"></yes-no>
-            </div>
-
-            <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
-              <multiple-choice v-model="evaluateObj.evaluated_data.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
+              <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
+                <multiple-choice v-model="evaluateObj.evaluated_data.choice" :choices="evaluateObj.evaluation_config.choices"></multiple-choice>
+              </div>
             </div>
           </div>
         </div>
@@ -208,11 +210,6 @@
             this.loading = false
             this.session = res.data.session
             this.lesson = res.data.session.lesson
-            this.lesson.evaluatable_objectives.map(obj => {
-              obj.evaluated_data = obj.evaluated_data ? obj.evaluated_data : {}
-
-              return obj
-            })
             this.sessionTags = res.data.session.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
           })
           .catch((res) => {

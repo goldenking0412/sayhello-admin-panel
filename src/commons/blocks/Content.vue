@@ -19,7 +19,7 @@
         </audio>
       </div>
     </div>
-    <EvaluatorObjectives v-bind:block="block" />
+    <EvaluatorObjectives v-bind:readonly="readonly" v-bind:block="block" />
   </div>
 </template>
 
@@ -27,7 +27,7 @@
   import EvaluatorObjectives from './EvaluatorObjectives.vue'
 
   export default {
-    props: ['block'],
+    props: ['block', 'readonly'],
     components: { EvaluatorObjectives },
     mounted() {
     },
