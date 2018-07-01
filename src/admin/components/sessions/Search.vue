@@ -73,6 +73,15 @@
             />
         </div>
       </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Evaluated by</label>
+          <select v-model="search.evaluated_by" class="form-control">
+              <option value="" selected>-- Select Evaluator --</option>
+              <option v-for="user in evaluators" :key="user.id" :value="user.id">{{ user.name }}</option>
+            </select>
+        </div>
+      </div>
     </div>
     <p class="text-right">
         <button class="btn btn-primary" @click.prevent="loadSessions()">
@@ -153,13 +162,15 @@
         sessionTags: [],
         total: 0,
         totalPages: 0,
+        evaluators: [],
         search: {
           per_page: 50,
           page: 1,
           status: '',
           created_from: 0,
           created_to: 0,
-          has_evaluation: true
+          has_evaluation: true,
+          evaluated_by: null
         }
       }
     },
@@ -176,17 +187,23 @@
         params.has_evaluation = params.has_evaluation ? 1 : 0
         params.created_from = params.created_from ? params.created_from.valueOf() / 1000 : null
         params.created_to = params.created_to ? params.created_to.valueOf() / 1000 : null
-        console.log(this.search)
-        this.axios.get('/v5/admin/sessions', { params })
-        .then((res) => {
-          this.sessions = res.data.data
-          this.total = res.data.total
-          this.search.per_page = res.data.per_page
-          this.totalPages = Math.ceil(res.data.total / res.data.per_page)
-        })
-        .catch((err) => {
 
+        Object.keys(params).map(key => {
+          if (!params[key]) {
+            params[key] = null
+          }
         })
+
+        this.axios.get('/v5/admin/sessions', { params })
+          .then((res) => {
+            this.sessions = res.data.data
+            this.total = res.data.total
+            this.search.per_page = res.data.per_page
+            this.totalPages = Math.ceil(res.data.total / res.data.per_page)
+          })
+          .catch((err) => {
+
+          })
       },
       loadLearningNodes() {
         this.axios.get('/v5/admin/learning_nodes', {params: {per_page: 9999}})
@@ -205,9 +222,19 @@
       },
       showSession(node) {
         this.$modal.show('students.session', node)
+      },
+      loadEvaluators() {
+        this.axios.get('/v5/admin/users', {params: { role: 'evaluator', per_page: 9999}})
+          .then((res) => {
+            this.evaluators = res.data.data
+          })
+          .catch((err) => {
+
+          })
       }
     },
     mounted() {
+      this.loadEvaluators()
       this.loadSessions()
       this.loadLearningNodes()
     }
