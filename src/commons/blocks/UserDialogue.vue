@@ -49,7 +49,7 @@
         </div>
         <div class="col-9">
           <audio controls style="width: 100%;">
-            <source :src="block.sample_response.audio" type="audio/mpeg">
+            <source :src="block.response.audio" type="audio/mpeg">
           </audio>
         </div>
       </div>
