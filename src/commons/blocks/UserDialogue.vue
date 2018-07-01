@@ -13,13 +13,16 @@
       </p>
     </div>
     <hr>
-    <div class="row mb-4" v-if="block.fill_words && block.fill_words.length">
+    <div class="row" v-if="block.fill_words && block.fill_words.length">
       <div class="col-3">
         <strong>Words for blanks:</strong>
       </div>
       <div class="col-9">
         <strong class="text-primary">{{ block.fill_words.join(', ') }}</strong>
       </div>
+    </div>
+    <div class="row mb-4" v-if="block.fill_words && block.fill_words.length && block.response">
+        <span class="text-danger" v-if="block.response.viewed_helper_words">Viewed helper words</span>
     </div>
     <div class="row" v-if="block.sample_response && block.sample_response.audio">
       <div class="col-3 pt-3">
