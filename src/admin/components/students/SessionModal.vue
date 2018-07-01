@@ -91,15 +91,6 @@
               <h5 v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'"class="text-info">{{ $lodash.get(evaluateObj, 'title') }}</h5>
               <pre v-if="evaluateObj.rating_scale != 'Criteria.RatingScale.GeneralFeedback'">{{ $lodash.get(evaluateObj, 'evaluation_config.question') }}</pre>
 
-              <div v-if="evaluateObj.evaluated_data.rating_scale == 'Criteria.RatingScale.GeneralFeedback'">
-                <h5 class="text-info">{{ evaluateObj.description.en }}</h5>
-                <p>{{ evaluateObj.evaluated_data.feedback_notes }}</p>
-                <audio controls v-if="evaluateObj.evaluated_data.audio">
-                  <source :src="evaluateObj.evaluated_data.audio" type="audio/mpeg">
-                  Your browser does not support the audio element.
-                </audio>
-              </div>
-
               <div style="margin-bottom: 10px" v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.OneFive'">
                 <star-rating v-model="evaluateObj.evaluated_data.rating"></star-rating>
               </div>
@@ -205,6 +196,7 @@
       },
       loadSessions() {
         this.loading = true
+        this.lesson = null
         this.axios.get('/v5/admin/learning_nodes/sessions/' + this.sessionId)
           .then((res) => {
             this.loading = false
