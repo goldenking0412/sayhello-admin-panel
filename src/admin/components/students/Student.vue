@@ -198,12 +198,14 @@
   import Paginate from 'vuejs-paginate'
 
   export default {
+    props: ['id'],
     components: {
       Pagination, AddNoteModal, AddLearningNodeModal, AssignEvaluatorModal,
       SessionModal, EditStudentModal, Paginate
     },
     data() {
       return {
+        studentId: null,
         student: null,
         learningNodes: [],
         paths: [],
@@ -217,7 +219,7 @@
         this.$modal.show('objective.show', objective)
       },
       loadStudent() {
-        this.axios.get('/v5/admin/students/' + this.$route.params.id)
+        this.axios.get('/v5/admin/students/' + this.studentId)
           .then((res) => {
             this.student = res.data.data
           })
@@ -226,7 +228,7 @@
           })
       },
       loadLearningNodes() {
-        this.axios.get('/v5/admin/students/' + this.$route.params.id + '/learning_nodes?type=ondemand')
+        this.axios.get('/v5/admin/students/' + this.studentId + '/learning_nodes?type=ondemand')
           .then((res) => {
             this.learningNodes = res.data.data
           })
@@ -235,7 +237,7 @@
           })
       },
       loadPaths() {
-        this.axios.get('/v5/admin/students/' + this.$route.params.id + '/learning_nodes?type=path')
+        this.axios.get('/v5/admin/students/' + this.studentId + '/learning_nodes?type=path')
           .then((res) => {
             this.paths = res.data.data
           })
@@ -244,7 +246,7 @@
           })
       },
       loadSessions() {
-        this.axios.get('/v5/admin/sessions', {params: {student_id: this.$route.params.id, page: this.sessionPage} })
+        this.axios.get('/v5/admin/sessions', {params: {student_id: this.studentId, page: this.sessionPage} })
           .then((res) => {
             this.sessions = res.data.data
             this.totalSessionPages = Math.ceil(res.data.total / res.data.per_page)
@@ -289,6 +291,7 @@
       }
     },
     mounted() {
+      this.studentId = this.id || this.$route.params.id
       this.loadStudent()
       this.loadLearningNodes()
       this.loadPaths()
