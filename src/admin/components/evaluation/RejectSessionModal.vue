@@ -1,25 +1,17 @@
 <template>
-  <modal name="sessions.reject" class="commonModal" @before-open="beforeOpen">
+  <modal name="precheck.reject" class="commonModal" @before-open="beforeOpen">
     <div class="p-4">
       <h4 class="text-center mb-4">Reject session</h4>
       <form @submit.prevent="validateBeforeSubmit">
-        <div class="form-group">
-          <label>Reason:</label>
-          <select name="reason" v-validate="'required'" class="form-control" v-model="params.reason"
-            :class="{'is-invalid': errors.has('reason') }">
-            <option value="" selected>-- Select reason --</option>
-            <option :value="reason" v-for="(reason, index) in reasons" :key="index">{{ reason }}</option>
-          </select>
-          <div class="invalid-feedback" v-if="errors.has('reason')">
-            {{ errors.first('reason') }}
-          </div>
-        </div>
+        <ul class="listReasons">
+          <li v-for="(reason, index) in reasons" :key="index" @click.prevent="selectReason(index)"
+            :class="{active: reasonSelected == index}">
+            {{ reason }}
+          </li>
+        </ul>
         <hr>
         <div class="text-right mt-4">
           <button class="btn btn-default btn-md" @click.prevent="close()">Close</button>
-          <button class="btn btn-success btn-md ml-2">
-            Reject
-          </button>
         </div>
       </form>
       <loading v-if="loading"/>
@@ -34,6 +26,7 @@
         loading: false,
         reasons: [],
         sessionId: null,
+        reasonSelected: null,
         params: {
           reason: '',
           precheck_status: false
@@ -41,7 +34,6 @@
       }
     },
     mounted() {
-      this.load
     },
     methods: {
       beforeOpen(event) {
@@ -50,6 +42,11 @@
 
         this.loading = true
         this.loadReasons()
+      },
+      selectReason(index) {
+        this.reasonSelected = index
+        this.params.reason = this.reasons[index]
+        this.rejectSession()
       },
       loadReasons() {
         this.axios.get('/v5/common/session_reject_resons')
@@ -71,12 +68,18 @@
         })
       },
       rejectSession() {
+        if (!this.reasonSelected) {
+          this.$flash.notify('danger', "Please select a reason")
+          return
+        }
+
         this.loading = true
         this.axios.post('/v5/students/learning_nodes/' + this.sessionId + '/precheck', this.params)
           .then((res) => {
             this.loading = false
             this.close()
             this.$flash.notify('success', 'Session has been rejected successfully')
+            this.$emit('session-rejected')
           })
           .catch((res) => {
             this.$flash.notify('success', 'Can\'t reject session. Please try again')
@@ -84,8 +87,30 @@
           })
       },
       close() {
-        this.$modal.hide('sessions.reject');
+        this.$modal.hide('precheck.reject');
       }
     }
   }
 </script>
+
+<style scoped>
+  .listReasons {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  .listReasons li {
+    border: 1px solid #888;
+    border-radius: 3px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background: #e6e6e6;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .listReasons li.active {
+    background: #FFF;
+    border: 1px solid #17bb17;
+  }
+</style>
