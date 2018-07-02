@@ -12,9 +12,6 @@
         <hr>
         <div class="text-right mt-4">
           <button class="btn btn-default btn-md" @click.prevent="close()">Close</button>
-          <button class="btn btn-success btn-md ml-2">
-            Reject
-          </button>
         </div>
       </form>
       <loading v-if="loading"/>
@@ -49,6 +46,7 @@
       selectReason(index) {
         this.reasonSelected = index
         this.params.reason = this.reasons[index]
+        this.rejectSession()
       },
       loadReasons() {
         this.axios.get('/v5/common/session_reject_resons')

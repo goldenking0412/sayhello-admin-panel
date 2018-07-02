@@ -34,12 +34,12 @@ export default {
         session: null
       }
     },
-    created() {
-      this.reload();
+    mounted() {
+      this.loadSession()
     },
     components: { BlocksContainer, RejectSessionModal },
     methods: {
-        reload() {
+        loadSession() {
           $(document, window).scrollTop(0)
           this.session = null
           this.axios.get('/v5/me/lesson_to_precheck')
@@ -55,8 +55,11 @@ export default {
           this.axios.post('/v5/students/learning_nodes/' + this.session.id + '/precheck', {
             prechecked_status: true
           }).then(() => {
-              this.reload();
+              this.reload()
           });
+        },
+        reload() {
+          this.$router.go(this.$router.currentRoute)
         },
         reject() {
           this.$modal.show('precheck.reject', this.session.id)
