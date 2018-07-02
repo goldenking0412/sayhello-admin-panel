@@ -10,6 +10,10 @@
         Student: <strong>{{ session.student.id }}</strong><br>
         Session: <strong>{{ session.id }}</strong>
       </p>
+      <p>
+          <span v-if="!session.student.can_communicate" class="badge badge-danger">No Communication Method</span>
+          <span v-if="session.student.can_communicate" class="badge badge-success">Has Communication Method</span>
+      </p>
       <hr>
       <BlocksContainer v-bind:blocks="session.lesson.blocks" />
       <div class="text-center mt-4">
