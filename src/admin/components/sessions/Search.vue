@@ -84,7 +84,7 @@
       </div>
     </div>
     <p class="text-right">
-        <button class="btn btn-primary" @click.prevent="loadSessions()">
+        <button class="btn btn-primary" @click.prevent="searchSessions()">
           Search
         </button>
     </p>
@@ -124,6 +124,7 @@
         <paginate
           :page-count="totalPages"
           :click-handler="changePage"
+          :force-page="search.page - 1"
           :container-class="'pagination justify-content-end'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -175,6 +176,10 @@
       }
     },
     methods: {
+      searchSessions() {
+        this.search.page = 1
+        this.loadSessions()
+      },
       loadSessions() {
         let params = {}
         let studentTagsSearch = this.studentTags.map(tag => tag.text)

@@ -44,7 +44,7 @@
       </div>
     </div>
     <p class="text-right">
-        <button class="btn btn-primary" @click.prevent="loadStudents()">
+        <button class="btn btn-primary" @click.prevent="searchStudents()">
           Search
         </button>
     </p>
@@ -88,6 +88,7 @@
         <paginate
           :page-count="totalPages"
           :click-handler="changePage"
+          :force-page="search.page - 1"
           :container-class="'pagination justify-content-end'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -134,6 +135,10 @@
       showObjective(objective) {
         this.$modal.show('objective.show', objective)
       },
+      searchStudents() {
+        this.search.page = 1
+        this.loadStudents()
+      },
       loadStudents() {
         let params = {}
         Object.assign(params, this.search)
@@ -165,7 +170,6 @@
           })
       },
       changePage(page) {
-        console.log(page)
         if(page && this.search.page != page) {
           this.search.page = page
           this.loadStudents()

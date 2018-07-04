@@ -30,7 +30,7 @@
       </div>
       <div class="col-sm-2">
         <label style="width: 100%;">&nbsp;</label>
-        <button class="btn btn-primary" @click.prevent="loadLearningNodes()">Search</button>
+        <button class="btn btn-primary" @click.prevent="searchLearningNodes()">Search</button>
       </div>
     </div>
     <div class="listConversations mt-4">
@@ -75,6 +75,7 @@
     <paginate
       :page-count="totalPages"
       :click-handler="changePage"
+      :force-page="search.page - 1"
       :container-class="'pagination justify-content-end'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
@@ -116,6 +117,10 @@
       this.loadLearningNodes()
     },
     methods: {
+      searchLearningNodes() {
+        this.search.page = 1
+        this.loadLearningNodes()
+      },
       loadLearningNodes() {
         this.search.tags = this.tags.map(tag => tag.text)
         this.axios.get('/v5/admin/learning_nodes', {params: this.search})
