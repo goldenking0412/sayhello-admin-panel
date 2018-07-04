@@ -30,10 +30,30 @@
       </div>
       <div class="col-sm-2">
         <label style="width: 100%;">&nbsp;</label>
-        <button class="btn btn-primary" @click.prevent="loadLearningNodes()">Search</button>
+        <button class="btn btn-primary" @click.prevent="searchLearningNodes()">Search</button>
       </div>
     </div>
-    <div class="listConversations mt-4">
+    <div class="row mt-4">
+      <div class="col-6">
+        Results: <strong>{{ total }}</strong>
+      </div>
+      <div class="col-6">
+        <paginate
+          ref="paginateTop"
+          :page-count="totalPages"
+          :click-handler="changePage"
+          :force-page="search.page - 1"
+          :container-class="'pagination justify-content-end'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'">
+        </paginate>
+      </div>
+    </div>
+    <div class="listConversations">
       <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
         <div class="row">
           <div class="col-sm-3">
@@ -73,8 +93,10 @@
       Not found any Learning Nodes
     </div>
     <paginate
+      ref="paginateBot"
       :page-count="totalPages"
       :click-handler="changePage"
+      :force-page="search.page - 1"
       :container-class="'pagination justify-content-end'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
@@ -103,6 +125,7 @@
       return {
         learningNodes: [],
         totalPages: 0,
+        total: 0,
         activeNode: '',
         tag: '',
         tags: [],
@@ -116,12 +139,18 @@
       this.loadLearningNodes()
     },
     methods: {
+      searchLearningNodes() {
+        this.search.page = 1
+        this.loadLearningNodes()
+        this.setPaginationCurrentPage()
+      },
       loadLearningNodes() {
         this.search.tags = this.tags.map(tag => tag.text)
         this.axios.get('/v5/admin/learning_nodes', {params: this.search})
           .then((res) => {
             this.learningNodes = res.data.data
             this.totalPages = Math.ceil(res.data.total / res.data.per_page)
+            this.total = res.data.total
           })
           .catch((res) => {
 
@@ -130,8 +159,13 @@
       changePage(page) {
         if(page != this.search.page) {
           this.search.page = page
+          this.setPaginationCurrentPage()
           this.loadLearningNodes()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')
