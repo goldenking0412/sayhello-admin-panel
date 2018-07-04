@@ -136,6 +136,7 @@
       searchLearningNodes() {
         this.search.page = 1
         this.loadLearningNodes()
+        this.setPaginationCurrentPage()
       },
       loadLearningNodes() {
         this.search.tags = this.tags.map(tag => tag.text)
@@ -151,10 +152,13 @@
       changePage(page) {
         if(page != this.search.page) {
           this.search.page = page
-          this.$refs.paginateTop.selected = page
-          this.$refs.paginateBot.selected = page
+          this.setPaginationCurrentPage()
           this.loadLearningNodes()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')

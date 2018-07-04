@@ -193,6 +193,7 @@
       searchSessions() {
         this.search.page = 1
         this.loadSessions()
+        this.setPaginationCurrentPage()
       },
       loadSessions() {
         let params = {}
@@ -236,10 +237,13 @@
       changePage(page) {
         if(page && this.search.page != page) {
           this.search.page = page
-          this.$refs.paginateTop.selected = page
-          this.$refs.paginateBot.selected = page
+          this.setPaginationCurrentPage()
           this.loadSessions()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       },
       showSession(node) {
         this.$modal.show('students.session', node)

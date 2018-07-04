@@ -152,6 +152,7 @@
       searchStudents() {
         this.search.page = 1
         this.loadStudents()
+        this.setPaginationCurrentPage()
       },
       loadStudents() {
         let params = {}
@@ -186,10 +187,13 @@
       changePage(page) {
         if(page && this.search.page != page) {
           this.search.page = page
-          this.$refs.paginateTop.selected = page
-          this.$refs.paginateBot.selected = page
+          this.setPaginationCurrentPage()
           this.loadStudents()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       }
     },
     mounted() {
