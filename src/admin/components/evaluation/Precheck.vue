@@ -9,7 +9,8 @@
           <h2>Precheck</h2>
         </div>
         <div class="col-6 text-right">
-          <button class="btn btn-primary" @click="viewStudent()">View Student</button>
+          <AddTagNote v-bind:student="session.student.id" v-bind:session="session.id"/>
+          <button class="btn btn-primary ml-1" @click="viewStudent()">View Student</button>
         </div>
       </div>
       <hr>
@@ -37,6 +38,7 @@ import {Howl, Howler} from 'howler'
 import AudioRecorder from './helpers/AudioRecorder'
 import {getRatingScaleData} from './helpers/RatingScalesHelper'
 import BlocksContainer from '../../../commons/blocks/BlocksContainer.vue'
+import AddTagNote from '../../../commons/AddTagNote.vue'
 import RejectSessionModal from './RejectSessionModal.vue'
 import StudentModal from '../students/StudentModal.vue'
 
@@ -51,7 +53,7 @@ export default {
     mounted() {
       this.loadSession()
     },
-    components: { BlocksContainer, RejectSessionModal, StudentModal },
+    components: { BlocksContainer, RejectSessionModal, StudentModal, AddTagNote },
     methods: {
       viewStudent() {
         this.$modal.show('students.show', this.session.student.id)
