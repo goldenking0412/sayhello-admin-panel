@@ -4,7 +4,15 @@
       No sessions to precheck
     </p>
     <div v-if="session">
-      <h2>Precheck</h2>
+      <div class="row">
+        <div class="col-6">
+          <h2>Precheck</h2>
+        </div>
+        <div class="col-6 text-right">
+          <button class="btn btn-primary" @click="viewStudent()">View Student</button>
+        </div>
+      </div>
+      <hr>
       <p>
         Student: <strong>{{ session.student.id }}</strong><br>
         Session: <strong>{{ session.id }}</strong>
@@ -21,6 +29,7 @@
       </div>
     </div>
     <RejectSessionModal v-on:session-rejected="reload()"/>
+    <StudentModal />
   </div>
 </template>
 <script>
@@ -29,6 +38,7 @@ import AudioRecorder from './helpers/AudioRecorder'
 import {getRatingScaleData} from './helpers/RatingScalesHelper'
 import BlocksContainer from '../../../commons/blocks/BlocksContainer.vue'
 import RejectSessionModal from './RejectSessionModal.vue'
+import StudentModal from '../students/StudentModal.vue'
 
 export default {
     data() {
@@ -41,8 +51,11 @@ export default {
     mounted() {
       this.loadSession()
     },
-    components: { BlocksContainer, RejectSessionModal },
+    components: { BlocksContainer, RejectSessionModal, StudentModal },
     methods: {
+      viewStudent() {
+        this.$modal.show('students.show', this.session.student.id)
+      },
         loadSession() {
           $(document, window).scrollTop(0)
           this.session = null
