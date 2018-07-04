@@ -33,6 +33,21 @@
         <button class="btn btn-primary" @click.prevent="searchLearningNodes()">Search</button>
       </div>
     </div>
+    <div class="mt-2">
+      <paginate
+        ref="paginateTop"
+        :page-count="totalPages"
+        :click-handler="changePage"
+        :force-page="search.page - 1"
+        :container-class="'pagination justify-content-end'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-class="'page-item'"
+        :next-link-class="'page-link'">
+      </paginate>
+    </div>
     <div class="listConversations mt-4">
       <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
         <div class="row">
@@ -73,6 +88,7 @@
       Not found any Learning Nodes
     </div>
     <paginate
+      ref="paginateBot"
       :page-count="totalPages"
       :click-handler="changePage"
       :force-page="search.page - 1"
@@ -135,6 +151,8 @@
       changePage(page) {
         if(page != this.search.page) {
           this.search.page = page
+          this.$refs.paginateTop.selected = page
+          this.$refs.paginateBot.selected = page
           this.loadLearningNodes()
         }
       },
