@@ -98,6 +98,7 @@
               <th>Learning node</th>
               <th>Status</th>
               <th>Created at</th>
+              <th>Updated at</th>
               <th></th>
             </tr>
           </thead>
@@ -108,6 +109,7 @@
               <td>{{ session.lesson.title }}</td>
               <td>{{ session.status }}</td>
               <td>{{ session.created_at | moment("DD/MM/YYYY hh:mm") }}</td>
+              <td>{{ session.updated_at | moment("DD/MM/YYYY hh:mm") }}</td>
               <td>
                 <button class="btn btn-sm btn-primary" @click.prevent="showSession(session.id)">
                   View
