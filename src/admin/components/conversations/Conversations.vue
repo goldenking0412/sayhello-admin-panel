@@ -30,11 +30,31 @@
       </div>
       <div class="col-sm-2">
         <label style="width: 100%;">&nbsp;</label>
-        <button class="btn btn-primary" @click.prevent="loadLearningNodes()">Search</button>
+        <button class="btn btn-primary" @click.prevent="searchLearningNodes()">Search</button>
       </div>
     </div>
-    <div class="listConversations mt-4">
-      <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" v-bind:key="node.id">
+    <div class="row mt-4">
+      <div class="col-6">
+        Results: <strong>{{ total }}</strong>
+      </div>
+      <div class="col-6">
+        <paginate
+          ref="paginateTop"
+          :page-count="totalPages"
+          :click-handler="changePage"
+          :force-page="search.page - 1"
+          :container-class="'pagination justify-content-end'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'">
+        </paginate>
+      </div>
+    </div>
+    <div class="listConversations">
+      <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
         <div class="row">
           <div class="col-sm-3">
             <img :src="node.image" :alt="node.title" class="img-fluid rounded">
@@ -55,9 +75,8 @@
             </p>
             <p>Duration: <strong>{{ node.duration }} mins</strong></p>
             <div class="text-right">
-              <button class="btn btn-sm btn-primary" @click="duplicateLearningNode(node)">
-                <i v-if="node.loading" class="fas fa-sync-alt fa-spin"></i>
-                <span v-if="!node.loading">Duplicate</span>
+              <button class="btn btn-sm btn-primary">
+                Duplicate
               </button>
               <router-link class="btn btn-sm btn-info ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
                 Edit
@@ -74,8 +93,10 @@
       Not found any Learning Nodes
     </div>
     <paginate
+      ref="paginateBot"
       :page-count="totalPages"
       :click-handler="changePage"
+      :force-page="search.page - 1"
       :container-class="'pagination justify-content-end'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
@@ -104,6 +125,7 @@
       return {
         learningNodes: [],
         totalPages: 0,
+        total: 0,
         activeNode: '',
         tag: '',
         tags: [],
@@ -117,19 +139,6 @@
       this.loadLearningNodes()
     },
     methods: {
-      duplicateLearningNode(node) {
-        this.$set(node, 'loading', true)
-        this.axios.post('/v5/admin/learning_nodes/' + node.id + '/duplicate')
-          .then((res) => {
-            this.$set(node, 'loading', false)
-            this.$flash.notify('success', "Node has been duplicated successfully")
-            this.$router.push({ name: 'conversations.show', params: {id: res.data.id}})
-          })
-          .catch((err) => {
-            this.$set(node, 'loading', false)
-            this.$flash.notify('success', "Can't duplicate node. Please try again")
-          })
-      },
       searchLearningNodes() {
         this.search.page = 1
         this.loadLearningNodes()
@@ -141,6 +150,7 @@
           .then((res) => {
             this.learningNodes = res.data.data
             this.totalPages = Math.ceil(res.data.total / res.data.per_page)
+            this.total = res.data.total
           })
           .catch((res) => {
 
@@ -149,8 +159,13 @@
       changePage(page) {
         if(page != this.search.page) {
           this.search.page = page
+          this.setPaginationCurrentPage()
           this.loadLearningNodes()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')

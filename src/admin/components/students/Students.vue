@@ -50,23 +50,27 @@
     </p>
     <hr>
     <section class="section">
-      <div>
-        Results: <strong>{{ total }}</strong>
-      </div>
       <div class="table-responsive">
-        <paginate
-          ref="paginateTop"
-          :page-count="totalPages"
-          :click-handler="changePage"
-          :force-page="search.page - 1"
-          :container-class="'pagination justify-content-end'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-class="'page-item'"
-          :next-link-class="'page-link'">
-        </paginate>
+        <div class="row">
+          <div class="col-6">
+            Results: <strong>{{ total }}</strong>
+          </div>
+          <div class="col-6">
+            <paginate
+              ref="paginateTop"
+              :page-count="totalPages"
+              :click-handler="changePage"
+              :force-page="search.page - 1"
+              :container-class="'pagination justify-content-end'"
+              :page-class="'page-item'"
+              :page-link-class="'page-link'"
+              :prev-class="'page-item'"
+              :prev-link-class="'page-link'"
+              :next-class="'page-item'"
+              :next-link-class="'page-link'">
+            </paginate>
+          </div>
+        </div>
         <table class="table table-striped">
           <thead>
             <tr>
