@@ -21,8 +21,9 @@
           </p>
           <p>Duration: <strong>{{ node.duration }} mins</strong></p>
           <div class="text-right">
-            <button class="btn btn-sm btn-primary">
-              Duplicate
+            <button class="btn btn-sm btn-primary" @click.prevent="duplicateLearningNode()">
+              <i v-if="loading" class="fas fa-sync-alt fa-spin"></i>
+              <span v-if="!loading">Duplicate</span>
             </button>
             <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode()">
               Edit
@@ -102,7 +103,8 @@
     },
     data() {
       return {
-        node: null
+        node: null,
+        loading: false
       }
     },
     mounted() {
@@ -148,6 +150,19 @@
       removeBlock(index) {
         this.node.blocks.splice(index, 1)
         this.updateBlocks()
+      },
+      duplicateLearningNode() {
+        this.loading = true
+        this.axios.post('/v5/admin/learning_nodes/' + this.node.id + '/duplicate')
+          .then((res) => {
+            this.loading = false
+            this.$flash.notify('success', "Node has been duplicated successfully")
+            this.$router.push({ name: 'conversations.show', params: {id: res.data.id}})
+          })
+          .catch((err) => {
+            this.loading = false
+            this.$flash.notify('success', "Can't duplicate node. Please try again")
+          })
       },
       updateBlocks() {
         let blocks = this.node.blocks
