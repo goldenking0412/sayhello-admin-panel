@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="listConversations mt-4">
-      <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
+      <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" v-bind:key="node.id">
         <div class="row">
           <div class="col-sm-3">
             <img :src="node.image" :alt="node.title" class="img-fluid rounded">
@@ -55,8 +55,9 @@
             </p>
             <p>Duration: <strong>{{ node.duration }} mins</strong></p>
             <div class="text-right">
-              <button class="btn btn-sm btn-primary">
-                Duplicate
+              <button class="btn btn-sm btn-primary" @click="duplicateLearningNode(node)">
+                <i v-if="node.loading" class="fas fa-sync-alt fa-spin"></i>
+                <span v-if="!node.loading">Duplicate</span>
               </button>
               <router-link class="btn btn-sm btn-info ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
                 Edit
@@ -116,6 +117,19 @@
       this.loadLearningNodes()
     },
     methods: {
+      duplicateLearningNode(node) {
+        this.$set(node, 'loading', true)
+        this.axios.post('/v5/admin/learning_nodes/' + node.id + '/duplicate')
+          .then((res) => {
+            this.$set(node, 'loading', false)
+            this.$flash.notify('success', "Node has been duplicated successfully")
+            this.$router.push({ name: 'conversations.show', params: {id: res.data.id}})
+          })
+          .catch((err) => {
+            this.$set(node, 'loading', false)
+            this.$flash.notify('success', "Can't duplicate node. Please try again")
+          })
+      },
       loadLearningNodes() {
         this.search.tags = this.tags.map(tag => tag.text)
         this.axios.get('/v5/admin/learning_nodes', {params: this.search})
