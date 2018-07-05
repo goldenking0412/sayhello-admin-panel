@@ -44,7 +44,7 @@
       </div>
     </div>
     <p class="text-right">
-        <button class="btn btn-primary" @click.prevent="loadStudents()">
+        <button class="btn btn-primary" @click.prevent="searchStudents()">
           Search
         </button>
     </p>
@@ -54,6 +54,19 @@
         Results: <strong>{{ total }}</strong>
       </div>
       <div class="table-responsive">
+        <paginate
+          ref="paginateTop"
+          :page-count="totalPages"
+          :click-handler="changePage"
+          :force-page="search.page - 1"
+          :container-class="'pagination justify-content-end'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'">
+        </paginate>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -86,8 +99,10 @@
           </tbody>
         </table>
         <paginate
+          ref="paginateBot"
           :page-count="totalPages"
           :click-handler="changePage"
+          :force-page="search.page - 1"
           :container-class="'pagination justify-content-end'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -134,6 +149,11 @@
       showObjective(objective) {
         this.$modal.show('objective.show', objective)
       },
+      searchStudents() {
+        this.search.page = 1
+        this.loadStudents()
+        this.setPaginationCurrentPage()
+      },
       loadStudents() {
         let params = {}
         Object.assign(params, this.search)
@@ -165,11 +185,15 @@
           })
       },
       changePage(page) {
-        console.log(page)
         if(page && this.search.page != page) {
           this.search.page = page
+          this.setPaginationCurrentPage()
           this.loadStudents()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       }
     },
     mounted() {

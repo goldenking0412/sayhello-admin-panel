@@ -84,12 +84,25 @@
       </div>
     </div>
     <p class="text-right">
-        <button class="btn btn-primary" @click.prevent="loadSessions()">
+        <button class="btn btn-primary" @click.prevent="searchSessions()">
           Search
         </button>
     </p>
     <section class="section">
       <div class="table-responsive">
+        <paginate
+          ref="paginateTop"
+          :page-count="totalPages"
+          :click-handler="changePage"
+          :force-page="search.page - 1"
+          :container-class="'pagination justify-content-end'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'">
+        </paginate>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -124,8 +137,10 @@
           </tbody>
         </table>
         <paginate
+          ref="paginateBot"
           :page-count="totalPages"
           :click-handler="changePage"
+          :force-page="search.page - 1"
           :container-class="'pagination justify-content-end'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -177,6 +192,11 @@
       }
     },
     methods: {
+      searchSessions() {
+        this.search.page = 1
+        this.loadSessions()
+        this.setPaginationCurrentPage()
+      },
       loadSessions() {
         let params = {}
         let studentTagsSearch = this.studentTags.map(tag => tag.text)
@@ -219,8 +239,13 @@
       changePage(page) {
         if(page && this.search.page != page) {
           this.search.page = page
+          this.setPaginationCurrentPage()
           this.loadSessions()
         }
+      },
+      setPaginationCurrentPage() {
+        this.$refs.paginateTop.selected = this.search.page
+        this.$refs.paginateBot.selected = this.search.page
       },
       showSession(node) {
         this.$modal.show('students.session', node)

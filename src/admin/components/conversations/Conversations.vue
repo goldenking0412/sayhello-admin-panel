@@ -130,6 +130,11 @@
             this.$flash.notify('success', "Can't duplicate node. Please try again")
           })
       },
+      searchLearningNodes() {
+        this.search.page = 1
+        this.loadLearningNodes()
+        this.setPaginationCurrentPage()
+      },
       loadLearningNodes() {
         this.search.tags = this.tags.map(tag => tag.text)
         this.axios.get('/v5/admin/learning_nodes', {params: this.search})
