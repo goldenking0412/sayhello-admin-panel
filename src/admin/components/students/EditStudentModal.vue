@@ -72,6 +72,7 @@
       beforeOpen(event) {
         this.student = event.params
         this.params.status_change.status = this.student.status
+        this.params.auto_precheck = this.student.auto_precheck
         this.tags = this.student.tags.map(tag => { return {text: tag, tiClasses: ['valid']} })
       },
       validateBeforeSubmit() {
