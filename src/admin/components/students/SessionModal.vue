@@ -99,7 +99,7 @@
               </div>
 
               <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.YesNo'">
-                  <yes-no v-model="evaluateObj.evaluated_data.choice"></yes-no>
+                  <yes-no v-model="evaluateObj.evaluated_data.condition_met"></yes-no>
               </div>
 
               <div v-if="evaluateObj.rating_scale == 'Criteria.RatingScale.MultipleChoice'">
