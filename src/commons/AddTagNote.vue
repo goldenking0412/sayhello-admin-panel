@@ -10,7 +10,6 @@
               :tags="studentTags"
               @tags-changed="newTags => studentTags = newTags"
               :autocomplete-items="studentTagsHints"
-              :add-only-from-autocomplete="true"
             />
           </div>
           <div class="col-md-12 pull-right" style="padding-top: 15px; text-align: right;">
@@ -34,7 +33,6 @@
             :tags="sessionTags"
             @tags-changed="newTags => sessionTags = newTags"
             :autocomplete-items="sessionTagsHints"
-            :add-only-from-autocomplete="true"
           />
         </div>
         <div class="col-md-12 pull-right" style="padding-top: 15px; text-align: right;">
