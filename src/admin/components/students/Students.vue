@@ -56,19 +56,8 @@
             Results: <strong>{{ total }}</strong>
           </div>
           <div class="col-6">
-            <paginate
-              ref="paginateTop"
-              :page-count="totalPages"
-              :click-handler="changePage"
-              :force-page="search.page - 1"
-              :container-class="'pagination justify-content-end'"
-              :page-class="'page-item'"
-              :page-link-class="'page-link'"
-              :prev-class="'page-item'"
-              :prev-link-class="'page-link'"
-              :next-class="'page-item'"
-              :next-link-class="'page-link'">
-            </paginate>
+            <v-pagination :pages="totalPages" v-on:page-changed="changePage"
+              ref="paginateTop"></v-pagination>
           </div>
         </div>
         <table class="table table-striped">
@@ -102,19 +91,8 @@
             </tr>
           </tbody>
         </table>
-        <paginate
-          ref="paginateBot"
-          :page-count="totalPages"
-          :click-handler="changePage"
-          :force-page="search.page - 1"
-          :container-class="'pagination justify-content-end'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-class="'page-item'"
-          :next-link-class="'page-link'">
-        </paginate>
+        <v-pagination :pages="totalPages" v-on:page-changed="changePage"
+              ref="paginateBot"></v-pagination>
       </div>
     </section>
   </div>
@@ -196,8 +174,8 @@
         }
       },
       setPaginationCurrentPage() {
-        this.$refs.paginateTop.selected = this.search.page
-        this.$refs.paginateBot.selected = this.search.page
+        this.$refs.paginateTop.setCurrentPage(this.search.page)
+        this.$refs.paginateBot.setCurrentPage(this.search.page)
       }
     },
     mounted() {
