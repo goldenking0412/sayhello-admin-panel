@@ -38,19 +38,8 @@
         Results: <strong>{{ total }}</strong>
       </div>
       <div class="col-6">
-        <paginate
-          ref="paginateTop"
-          :page-count="totalPages"
-          :click-handler="changePage"
-          :force-page="search.page - 1"
-          :container-class="'pagination justify-content-end'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-class="'page-item'"
-          :next-link-class="'page-link'">
-        </paginate>
+        <v-pagination :pages="totalPages" v-on:page-changed="changePage"
+              ref="paginateTop"></v-pagination>
       </div>
     </div>
     <div class="listConversations">
@@ -92,19 +81,8 @@
     <div class="emptyList" v-if="!learningNodes.length">
       Not found any Learning Nodes
     </div>
-    <paginate
-      ref="paginateBot"
-      :page-count="totalPages"
-      :click-handler="changePage"
-      :force-page="search.page - 1"
-      :container-class="'pagination justify-content-end'"
-      :page-class="'page-item'"
-      :page-link-class="'page-link'"
-      :prev-class="'page-item'"
-      :prev-link-class="'page-link'"
-      :next-class="'page-item'"
-      :next-link-class="'page-link'">
-    </paginate>
+    <v-pagination :pages="totalPages" v-on:page-changed="changePage"
+              ref="paginateBot"></v-pagination>
     <AddLearningNodeModal />
     <PreviewLearningNodeModal :learningNodeId="activeNode"/>
   </div>
@@ -164,8 +142,8 @@
         }
       },
       setPaginationCurrentPage() {
-        this.$refs.paginateTop.selected = this.search.page
-        this.$refs.paginateBot.selected = this.search.page
+        this.$refs.paginateTop.setCurrentPage(this.search.page)
+        this.$refs.paginateBot.setCurrentPage(this.search.page)
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')
