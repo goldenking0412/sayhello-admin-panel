@@ -9,7 +9,7 @@
       </div>
       <div class="form-group">
         <label>Text to Speak <abbr title="Required">*</abbr></label>
-        <quill-editor v-model="block.content" :options="editorOptions"></quill-editor>
+        <vue-ckeditor v-model="block.content" :config="editorOptions"/>
         <input type="hidden" name="content" v-model="block.content">
       </div>
       <div class="form-group">
@@ -58,8 +58,8 @@
         loading: false,
         isNewObject: true,
         editorOptions: {
-          modules: {
-          }
+          extraPlugins: 'html5audio',
+          language: 'en'
         },
         learningObjectives: [],
         node: {
