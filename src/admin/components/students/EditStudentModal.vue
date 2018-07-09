@@ -23,6 +23,12 @@
             :autocomplete-items="getAutocompleteTags(tag)"
           />
       </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" v-model="params.auto_precheck">
+          Bypass precheck
+        </label>
+      </div>
       <hr>
       <div class="text-right mt-4">
         <button class="btn btn-default btn-md" @click.prevent="close()">Close</button>

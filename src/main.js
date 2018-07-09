@@ -13,6 +13,7 @@ import lodash from 'lodash'
 import VueMoment from 'vue-moment'
 import VeeValidate from 'vee-validate'
 import VueQuillEditor from 'vue-quill-editor'
+import VueCkeditor from 'vue-ckeditor2'
 import vSelect from 'vue-select'
 import Loading from './commons/Loading'
 
@@ -44,6 +45,7 @@ Vue.use(VueAxios, axios)
 Vue.use(VueMoment)
 Vue.use(VeeValidate)
 Vue.use(VueQuillEditor)
+Vue.use(VueCkeditor)
 
 const router = new Router({
   mode: 'history',

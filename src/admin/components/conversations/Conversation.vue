@@ -130,6 +130,7 @@
         this.$modal.show('learning-nodes.create', this.node)
       },
       editBlock(block) {
+        console.log(block);
         let type = 'system-dialogue'
 
         switch (block.type) {
@@ -138,6 +139,7 @@
             break;
           case 'Content':
             type = 'content'
+            break;
           case 'WebPage':
             type = 'web-page'
             break;
