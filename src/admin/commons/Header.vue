@@ -25,7 +25,7 @@
           </li>
           
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'conversations.index'}">Conversations</router-link>
+            <router-link class="nav-link" :to="{name: 'conversations.index'}">Learning Nodes</router-link>
           </li>
         </template>
       </ul>
