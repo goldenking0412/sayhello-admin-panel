@@ -1,6 +1,31 @@
 <template>
   <modal name="students.add-learning-node" class="objectiveModal" @before-open="beforeOpen">
     <h4 class="text-center mb-4">Add Learning Node <span v-if="student"> - {{ student.name }}</span></h4>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Title:</label>
+          <input type="text" class="form-control" v-model="search.title">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Tags:</label>
+          <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              @tags-changed="newTags => tags = newTags"
+              :autocomplete-items="getAutocompleteTags(tag)"
+            />
+        </div>
+      </div>
+    </div>
+    <div class="text-right">
+      <button class="btn btn-primary btn-md" @click.prevent="loadLearningNodes()">
+        Search
+      </button>
+    </div>
+    <hr>
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
         <label>Learning Node:</label>
@@ -29,17 +54,25 @@
 
 <script>
   import Loading from '../../../commons/Loading.vue'
+  import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
+  import VueTagsInput from '@johmun/vue-tags-input'
 
   export default {
+    mixins: [TagsAucompleteMixin],
     components: {
-      Loading
+      Loading, VueTagsInput
     },
     data() {
       return {
         student: null,
         learning_node_id: '',
         learningNodes: [],
-        loading: false
+        loading: false,
+        tag: '',
+        tags: [],
+        search: {
+          per_page: 99999
+        }
       }
     },
     mounted() {
@@ -58,7 +91,8 @@
         });
       },
       loadLearningNodes() {
-        this.axios.get('/v5/admin/learning_nodes', {params: {per_page: 9999}})
+        this.search.tags = this.tags.map(tag => tag.text)
+        this.axios.get('/v5/admin/learning_nodes', {params: this.search})
           .then((res) => {
             this.learningNodes = res.data.data;
           })
