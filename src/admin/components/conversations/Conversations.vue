@@ -127,8 +127,8 @@
         this.axios.get('/v5/admin/learning_nodes', {params: this.search})
           .then((res) => {
             this.learningNodes = res.data.data
-            this.totalPages = Math.ceil(res.data.total / res.data.per_page)
-            this.total = res.data.total
+            this.totalPages = res.data.meta.pagination.total_pages
+            this.total = res.data.meta.pagination.total
           })
           .catch((res) => {
 
