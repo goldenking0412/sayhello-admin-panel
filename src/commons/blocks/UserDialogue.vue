@@ -22,7 +22,13 @@
       </div>
     </div>
     <div class="row mb-4" v-if="block.fill_words && block.fill_words.length && block.response">
-        <span class="text-danger" v-if="block.response.viewed_helper_words">Viewed helper words</span>
+        <span class="text-danger" v-if="block.response.viewed_helper_words">
+            Student saw the words for blanks
+        </span>
+
+        <span class="text-success" v-if="block.response.viewed_helper_words">
+            Student did not see the words for blanks
+        </span>
     </div>
     <div class="row" v-if="block.sample_response && block.sample_response.audio">
       <div class="col-3 pt-3">
