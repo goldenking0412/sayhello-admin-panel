@@ -29,7 +29,7 @@
         reasonSelected: null,
         params: {
           reason: '',
-          precheck_status: false
+          prechecked_status: false
         },
       }
     },
