@@ -5,7 +5,7 @@
         <h3>Learning Nodes</h3>
       </div>
       <div class="col-6 text-right">
-        <button class="btn btn-success" @click.prevent="addLearningNode()">New Conversation</button>
+        <button class="btn btn-success" @click.prevent="addLearningNode()">Create Conversation</button>
       </div>
     </div>
     <hr>
@@ -13,11 +13,11 @@
     <div class="row">
       <div class="col-sm-5">
         <div class="form-group">
-          <label for="">Status:</label>
-          <v-select multiple v-model="search.statuses" :options="['active', 'draft', 'archived']"></v-select>
+          <label>Title:</label>
+          <input type="text" class="form-control" v-model="search.title">
         </div>
       </div>
-      <div class="col-sm-5">
+      <div class="col-sm-4">
         <div class="form-group">
           <label>Tags:</label>
           <vue-tags-input
@@ -28,8 +28,13 @@
             />
         </div>
       </div>
-      <div class="col-sm-2">
-        <label style="width: 100%;">&nbsp;</label>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="">Status:</label>
+          <v-select multiple v-model="search.statuses" :options="['active', 'draft', 'archived']"></v-select>
+        </div>
+      </div>
+      <div class="col-sm-12 text-right">
         <button class="btn btn-primary" @click.prevent="searchLearningNodes()">Search</button>
       </div>
     </div>
