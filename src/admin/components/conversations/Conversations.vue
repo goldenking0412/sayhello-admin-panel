@@ -48,31 +48,30 @@
       </div>
     </div>
     <div class="listConversations">
-      <div class="border mb-3 p-2 rounded" v-for="node in learningNodes" :key="node.id">
-        <div class="row">
-          <div class="col-sm-3">
-            <img :src="node.image" :alt="node.title" class="img-fluid rounded">
-          </div>
-          <div class="col-sm-9">
-            <div class="status">
+      <div class="row">
+        <div class="col-sm-4 col-md-3" v-for="node in learningNodes" :key="node.id">
+          <div class="border mb-3 p-2 rounded">
+            <div class="text-right status">
               <span style="color: #4CAF50" v-if="node.status == 'published' ">{{ node.status }}</span>
               <span style="color: #f44336" v-else>{{ node.status }}</span>
             </div>
+            <div class="mt-1 mb-2">
+              <img :src="node.image" :alt="node.title" class="img-fluid border rounded">
+            </div>
             <h5>
+              <small>
               <router-link :to="{name: 'conversations.show', params: {id: node.id }}">
                 {{ node.title }}
               </router-link>
               <span class="badge badge-primary mr-1" v-for="(tag, index) in node.tags" :key="index">{{ tag }}</span>
+              </small>
             </h5>
-            <p v-if="node.description">
+            <!-- <p v-if="node.description">
               {{ node.description.en }}
-            </p>
+            </p> -->
             <p>Duration: <strong>{{ node.duration }} mins</strong></p>
-            <div class="text-right">
-              <button class="btn btn-sm btn-primary">
-                Duplicate
-              </button>
-              <router-link class="btn btn-sm btn-info ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
+            <div class="text-center">
+              <router-link class="btn btn-sm btn-primary ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
                 Edit
               </router-link>
               <button class="btn btn-sm btn-success ml-1" @click="openPreviewModal(node)">
@@ -163,12 +162,8 @@
 
 <style scoped>
   .status {
-    position: absolute;
-    right: 20px;
-    top: 0px;
     text-transform: capitalize;
     font-weight: 500;
-    font-size: 15px;
     color: #4CAF50;
   }
 </style>
