@@ -77,9 +77,9 @@
               <span class="badge badge-primary mr-1" v-for="(tag, index) in node.tags" :key="index">{{ tag }}</span>
               </small>
             </h5>
-            <p v-if="node.description">
+            <!-- <p v-if="node.description">
               {{ node.description.en }}
-            </p>
+            </p> -->
             <p>Duration: <strong>{{ node.duration }} mins</strong></p>
             <div class="text-center">
               <router-link class="btn btn-sm btn-primary ml-1" :to="{name: 'conversations.show', params: {id: node.id }}">
