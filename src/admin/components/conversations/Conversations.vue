@@ -5,7 +5,15 @@
         <h3>Learning Nodes</h3>
       </div>
       <div class="col-6 text-right">
-        <button class="btn btn-success" @click.prevent="addLearningNode()">Create Conversation</button>
+        <div class="dropdown text-right">
+          <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Add Learning Node
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" @click.prevent="addLearningNode()">Lesson</a>
+            <a class="dropdown-item" href="#" @click.prevent="addGroup()">Group</a>
+          </div>
+        </div>
       </div>
     </div>
     <hr>
@@ -88,6 +96,7 @@
     <v-pagination :pages="totalPages" v-on:page-changed="changePage"
               ref="paginateBot"></v-pagination>
     <AddLearningNodeModal />
+    <AddGroup />
     <PreviewLearningNodeModal :learningNodeId="activeNode"/>
   </div>
 </template>
@@ -97,11 +106,13 @@
   import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
   import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
   import VueTagsInput from '@johmun/vue-tags-input'
+  import AddGroup from './AddGroup.vue'
 
   export default {
     mixins: [TagsAucompleteMixin],
     components: {
-      Paginate, AddLearningNodeModal, PreviewLearningNodeModal, VueTagsInput
+      Paginate, AddLearningNodeModal, PreviewLearningNodeModal, VueTagsInput,
+      AddGroup
     },
     data() {
       return {
@@ -151,6 +162,9 @@
       },
       addLearningNode() {
         this.$modal.show('learning-nodes.create')
+      },
+      addGroup() {
+        this.$modal.show('learning-nodes.create-group')
       },
       openPreviewModal(node) {
         this.activeNode = node.id
