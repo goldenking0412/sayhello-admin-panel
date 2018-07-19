@@ -36,54 +36,58 @@
       </div>
     </div>
     <hr>
-    <div class="dropdown text-right">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Add Block
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
-        <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
-        <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
-        <a class="dropdown-item" href="#" @click.prevent="addBlock('web-page')">WebPage</a>
+    <div v-if="node && node.type == 'lesson'">
+      <div class="dropdown text-right">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add Block
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('web-page')">WebPage</a>
+        </div>
+      </div>
+
+      <div class="listBlocks mt-2" v-if="node" @end="updateBlocks">
+        <draggable v-model="node.blocks" :options="{draggable:'.item'}">
+          <div class="border item rounded mb-3 p-4" v-for="(block, index) in node.blocks" :key="block.id">
+            <div class="text-right">
+              <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
+              <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
+              <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
+              <button class="btn btn-secondary btn-sm" v-else>Content</button>
+            </div>
+            <h5>{{ block.en ? block.en.text : block.title}}</h5>
+            <div v-if="block.type == 'Content'" v-html="block.content"></div>
+            <div v-if="block.type == 'WebPage'" v-html="block.url"></div>
+            <div v-else>{{ block.sin ? block.sin.text : ''}}</div>
+            <div class="mt-4" v-if="block.instructions && block.instructions.audio">
+              <audio controls style="width: 100%;">
+                <source :src="block.instructions.audio" type="audio/ogg">
+                  Your browser does not support the audio element.
+              </audio>
+            </div>
+            <div class="mt-2 text-right">
+              <button class="btn btn-success btn-sm" @click.prevent="editBlock(block)">
+                <i class="far fa-edit"></i>
+              </button>
+              <button class="btn btn-danger btn-sm ml-2" @click.prevent="removeBlock(index)">
+                <i class="far fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </draggable>
       </div>
     </div>
-
-    <div class="listBlocks mt-2" v-if="node" @end="updateBlocks">
-      <draggable v-model="node.blocks" :options="{draggable:'.item'}">
-        <div class="border item rounded mb-3 p-4" v-for="(block, index) in node.blocks" :key="block.id">
-          <div class="text-right">
-            <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
-            <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
-            <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
-            <button class="btn btn-secondary btn-sm" v-else>Content</button>
-          </div>
-          <h5>{{ block.en ? block.en.text : block.title}}</h5>
-          <div v-if="block.type == 'Content'" v-html="block.content"></div>
-          <div v-if="block.type == 'WebPage'" v-html="block.url"></div>
-          <div v-else>{{ block.sin ? block.sin.text : ''}}</div>
-          <div class="mt-4" v-if="block.instructions && block.instructions.audio">
-            <audio controls style="width: 100%;">
-              <source :src="block.instructions.audio" type="audio/ogg">
-                Your browser does not support the audio element.
-            </audio>
-          </div>
-          <div class="mt-2 text-right">
-            <button class="btn btn-success btn-sm" @click.prevent="editBlock(block)">
-              <i class="far fa-edit"></i>
-            </button>
-            <button class="btn btn-danger btn-sm ml-2" @click.prevent="removeBlock(index)">
-              <i class="far fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
-      </draggable>
-    </div>
+    <ConversationGroup :node="node" v-if="node && node.type == 'group'"/>
 
     <SystemDialogueModal v-on:added-block="addedBlock"/>
     <ContentModal v-on:added-block="addedBlock"/>
     <WebPageModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
     <AddLearningNodeModal v-on:updated-node="addedBlock"/>
+    <AddGroup />
     <PreviewLearningNodeModal :learningNodeId="node.id"/>
   </div>
 </template>
@@ -92,14 +96,17 @@
   import SystemDialogueModal from './SystemDialogueModal.vue'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import ContentModal from './ContentModal.vue'
+  import AddGroup from './AddGroup.vue'
   import WebPageModal from './WebPageModal.vue'
   import UserDialogueModal from './UserDialogueModal.vue'
   import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
   import draggable from 'vuedraggable'
+  import ConversationGroup from './ConversationGroup.vue'
 
   export default {
     components: {
-      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal, WebPageModal, PreviewLearningNodeModal
+      SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal,
+      WebPageModal, PreviewLearningNodeModal, AddGroup, ConversationGroup
     },
     data() {
       return {
@@ -127,10 +134,14 @@
         this.node = node
       },
       editNode() {
-        this.$modal.show('learning-nodes.create', this.node)
+        if (this.node.type == 'group') {
+          this.$modal.show('learning-nodes.create-group', this.node)
+        } else {
+          this.$modal.show('learning-nodes.create', this.node)
+        }
+        
       },
       editBlock(block) {
-        console.log(block);
         let type = 'system-dialogue'
 
         switch (block.type) {
