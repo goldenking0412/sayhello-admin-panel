@@ -26,7 +26,7 @@
             Student saw the words for blanks
         </span>
 
-        <span class="text-success" v-if="block.response.viewed_helper_words">
+        <span class="text-success" v-if="!block.response.viewed_helper_words">
             Student did not see the words for blanks
         </span>
     </div>
