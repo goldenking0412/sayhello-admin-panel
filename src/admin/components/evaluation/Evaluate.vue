@@ -14,6 +14,11 @@
       </div>
       <hr>
       <h3>{{ session.student.name }}</h3>
+      <h4>{{ session.lesson.title }}</h4>
+      <div>
+          <span class="badge badge-primary mr-1" v-for="(tag, index) in session.lesson.tags" :key="index">{{ tag }}</span>
+      </div>
+      <hr>
       <p>
         Student: <strong>{{ session.student.id }}</strong><br>
         Session: <strong>{{ session.id }}</strong>
@@ -46,6 +51,8 @@
           
             <div class="card" v-if="hasGeneralFeedback">
                 <div class="card-body">
+                    <p class="text-info text-center"><strong>Greet student by name "{{ session.student.name }}"</strong></p>
+                    <hr>
                     <div class="text-center">
                         <button class="btn btn-success" v-if="!isRecording && !isAudioPlaying" @click="startRecording()">
                             Start Recording
