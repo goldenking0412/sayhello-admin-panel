@@ -53,26 +53,35 @@
         X
       </button>
       <div v-if="lesson" class="modalBody">
-        <div class="tagDropdown">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Add Tag/Notes
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" @click="openStudentModal" style="cursor: pointer;">Student</a>
-              <a class="dropdown-item" @click="openSessionModal" style="cursor: pointer;">Session</a>
-            </div>
-          </div>
-        </div>
-        <h4 class="p-3">{{ lesson.title }}</h4>
-        <p>
-          {{ lesson.description }}
-        </p>
+        
         <div class="sessionContent">
-          <h6>Student</h6>
-          <h3>{{ session.student.name }}</h3>
-          <h3><small>Student ID - {{ session.student.id }}</small></h3>
-          <h3><small>Session ID - {{ session.id }}</small></h3>
+            <div class="tagDropdown">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Add Tag/Notes
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" @click="openStudentModal" style="cursor: pointer;">Student</a>
+                  <a class="dropdown-item" @click="openSessionModal" style="cursor: pointer;">Session</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Student</h6>
+                    <h3>{{ session.student.name }}</h3>
+                    <h3><small>Student ID - {{ session.student.id }}</small></h3>
+                    <h3><small>Session ID - {{ session.id }}</small></h3>
+                </div>
+                <div class="col-md-6">
+                    <h6>Lesson</h6>
+                    <h3>{{ session.lesson.title }}</h3>
+                    <h3><small>Lesson ID - {{ session.lesson.id }}</small></h3>
+                    <span class="badge badge-primary mr-1" v-for="(tag, index) in session.lesson.tags" :key="index">{{ tag }}</span>
+                </div>
+            </div>
+          
           <hr>
           <BlocksContainer v-bind:readonly="true" v-bind:blocks="session.lesson.blocks"/>
           <hr>
