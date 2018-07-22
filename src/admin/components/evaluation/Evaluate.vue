@@ -44,23 +44,33 @@
               </div>
           </div>
           
-          <div class="card" v-if="hasGeneralFeedback">
-              <div class="card-body">
-                  <div class="text-center">
-                      <button class="btn btn-success" v-if="!isRecording" @click="startRecording()">Start Recording</button>
-                      <button class="btn btn-danger" v-if="isRecording" @click="stopRecording()">Stop Recording</button>
-                      <button class="btn btn-warning" v-if="recordedAudio && !isRecording" @click="playRecorded()">Play Recorded</button>
-                  </div>
+            <div class="card" v-if="hasGeneralFeedback">
+                <div class="card-body">
+                    <div class="text-center">
+                        <button class="btn btn-success" v-if="!isRecording && !isAudioPlaying" @click="startRecording()">
+                            Start Recording
+                        </button>
+                        <button class="btn btn-danger" v-if="isRecording" @click="stopRecording()">
+                            Stop Recording
+                        </button>
+                        <button class="btn btn-warning" v-if="recordedAudio && !isRecording && !isAudioPlaying" @click="playRecorded()">
+                            Play Recorded
+                        </button>
+                        <button class="btn btn-danger" v-if="isAudioPlaying" @click="stopAudio()">
+                            Stop
+                        </button>
+                    </div>
 
-                  <hr>
-                  <label>Notes on this student</label>
-                  <p class="text-muted">Share your thoughts on the student and reasoning behind your evaluation. Will be shared with the student.</p>
-                  <textarea v-model="generalFeedback.feedback_notes" cols="30" rows="3" class="form-control"></textarea>
-                  <br>
-                  <label>Suggestions to improve spoken english</label>
-                  <textarea v-model="generalFeedback.feedback_suggestions" cols="30" rows="3" class="form-control"></textarea>
-              </div>
-          </div>
+                    <hr>
+                    <label>Notes on this student</label>
+                    <p class="text-muted">Share your thoughts on the student and reasoning behind your evaluation. Will be shared with the student.</p>
+                    <textarea v-model="generalFeedback.feedback_notes" cols="30" rows="3" class="form-control"></textarea>
+                    <br>
+                    <label>Suggestions to improve spoken english</label>
+                    <textarea v-model="generalFeedback.feedback_suggestions" cols="30" rows="3" class="form-control"></textarea>
+                </div>
+            </div> <!-- general feedback -->
+
           <hr>
           <p class="text-danger"><span v-if="error">An error occurred, make sure all fields are filled ({{error}}).</span></p>
           <p class="text-muted"><span v-if="processing">Please wait.</span></p>
@@ -100,7 +110,8 @@ export default {
       hasGeneralFeedback: false,
       isRecording: false,
       generalFeedback: {feedback_notes:"", feedback_suggestions:""},
-      error: false
+      error: false,
+      isAudioPlaying: false
     }
   },
     created() {
@@ -126,9 +137,9 @@ export default {
       BlocksContainer, StudentModal
     },
     methods: {
-      viewStudent() {
-        this.$modal.show('students.show', this.session.student.id)
-      },
+        viewStudent() {
+            this.$modal.show('students.show', this.session.student.id)
+        },
         playAudio(index) {
             if (this.activeAudio)
                 this.activeAudio.stop();
@@ -140,12 +151,14 @@ export default {
             this.activeAudio.on("end", () => {
                 this.stopAudio();
             });
+            this.isAudioPlaying = true;
             this.activeAudio.play();
         },
         stopAudio() {
             if (this.activeAudio)
                 this.activeAudio.stop();
             this.activeAudioIndex = false;
+            this.isAudioPlaying = false;
         },
         submit() {
             this.processing = true;
@@ -233,16 +246,16 @@ export default {
         },
         playRecorded() {
 
-            let s = new Howl({
+            this.activeAudio = new Howl({
                 src: [this.recordedAudio.url],
                 format: ["wav"]
             });
 
-            s.on("end", () => {
-                console.log("done");
+            this.activeAudio.on("end", () => {
+                this.stopAudio();
             });
-
-            s.play();
+            this.isAudioPlaying = true;
+            this.activeAudio.play();
         },
         reload() {
             this.stopAudio();
