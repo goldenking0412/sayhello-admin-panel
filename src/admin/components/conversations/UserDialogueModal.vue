@@ -13,10 +13,6 @@
         <label>Sinhala Meaning</label>
         <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
       </div>
-      <div class="form-group">
-        <label>Learning Objectives</label>
-        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
-      </div>
       <strong>Words for blanks</strong>
       <div class="form-group">
         <vue-tags-input
@@ -74,6 +70,10 @@
             {{ errors.first('max_time') }}
           </div>
         </div>
+      </div>
+       <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
       </div>
       <div class="text-right">
         <button class="btn btn-default btn-md" @click.prevent="close()">Close</button>
