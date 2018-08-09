@@ -7,8 +7,8 @@
         </div>
         <div class="col-sm-9">
           <div class="status">
-            <span style="color: #4CAF50" v-if="node.status == 'published' ">{{ node.status }}</span>
-            <span style="color: #f44336" v-else>{{ node.status }}</span>
+            <span style="color: #f44336" v-if="node.status == 'draft' ">{{ node.status }}</span>
+            <span style="color: #4CAF50" v-else>{{ node.status }}</span>
           </div>
           <h5>
             <div>
@@ -27,6 +27,12 @@
             </button>
             <button class="btn btn-sm btn-info ml-1" @click.prevent="editNode()">
               Edit
+            </button>
+            <button class="btn btn-sm btn-danger ml-1" v-if="node.status != 'draft'" @click.prevent="updateStatus('draft')">
+              Unpublish
+            </button>
+            <button class="btn btn-sm btn-success ml-1" v-else  @click.prevent="updateStatus('active')">
+              Publish
             </button>
             <button class="btn btn-sm btn-success ml-1" @click="showPreviewModal">
               Preview
@@ -193,6 +199,16 @@
       },
       showPreviewModal() {
         this.$modal.show('learning-nodes.preview')
+      },
+      updateStatus(status) {
+        this.node.status = status;
+
+        this.axios.post('/v5/admin/learning_nodes/' + this.node.id, { learning_node: this.node })
+          .then((res) => {
+            this.node = res.data;
+          })
+          .catch((err) => {
+          })
       }
     }
   }
