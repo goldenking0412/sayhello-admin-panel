@@ -48,6 +48,10 @@
           {{ errors.first('audio') }}
         </div>
       </div>
+      <div class="form-group">
+        <label>Image</label>
+        <input type="file" class="form-control" ref="imageFile" name="image" accept="image/*">
+      </div>
       <strong>Other options</strong>
       <div class="form-group">
         <label>
@@ -139,9 +143,26 @@
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.addBlock()
+            if (this.$refs.imageFile.files.length) {
+              this.uploadImage()
+            } else {
+              this.addBlock()
+            }
+
             return
           }
+        });
+      },
+      uploadImage() {
+        let uploadProcess = uploadcare.fileFrom('object', this.$refs.imageFile.files[0]);
+        this.loading = true
+
+        uploadProcess.done((fileInfo) => {
+          this.block.image = fileInfo.cdnUrl + fileInfo.name
+          this.addBlock()
+        }).fail((error, fileInfo) => {
+          this.loading = false
+          this.$flash.notify('warning', "Can't upload image. Please try again")
         });
       },
       addBlock() {
