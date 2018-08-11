@@ -63,7 +63,7 @@
         </div>
       </div>
     </div>
-    <EvaluatorObjectives v-bind:readonly="readonly" v-bind:block="block" />
+    <EvaluatorObjectives v-if="!$lodash.isEmpty(block.response)" v-bind:readonly="readonly" v-bind:block="block" />
   </div>
 </template>
 <script>
