@@ -202,7 +202,7 @@ export default {
                 block.evaluatable_objectives.forEach((lo) => {
                     let ratingScaleData = getRatingScaleData(lo, lo.rating_scale);
 
-                    if (ratingScaleData !== false) {
+                    if (ratingScaleData !== false && !this.$lodash.isEmpty(ratingScaleData)) {
                         payload.block_evaluations.push({
                             objective_id: lo.objective_id,
                             block_id: block.id,
