@@ -13,10 +13,6 @@
         <label>Sinhala Meaning</label>
         <input type="text" class="form-control" v-model="block.sin.text" name="meaning">
       </div>
-      <div class="form-group">
-        <label>Learning Objectives</label>
-        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
-      </div>
       <strong>Words for blanks</strong>
       <div class="form-group">
         <vue-tags-input
@@ -48,6 +44,15 @@
           {{ errors.first('audio') }}
         </div>
       </div>
+      <div class="form-group">
+        <label>Image</label>
+        <input type="file" class="form-control" ref="imageFile" name="image" accept="image/*">
+        <br>
+        <div v-if="!$lodash.isEmpty(block.image)" style="width:150px;">
+            <img :src="block.image" class="img-fluid" alt=""><br>
+            <a href="#" class="btn btn-sm btn-danger" @click="block.image = ''">Remove</a>
+        </div>
+      </div>
       <strong>Other options</strong>
       <div class="form-group">
         <label>
@@ -70,6 +75,10 @@
             {{ errors.first('max_time') }}
           </div>
         </div>
+      </div>
+       <div class="form-group">
+        <label>Learning Objectives</label>
+        <v-select multiple v-model="learningObjectives" label="title" :value="'id'" :options="learningObjectiveOptions"></v-select>
       </div>
       <div class="text-right">
         <button class="btn btn-default btn-md" @click.prevent="close()">Close</button>
@@ -139,9 +148,26 @@
       validateBeforeSubmit() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.addBlock()
+            if (this.$refs.imageFile.files.length) {
+              this.uploadImage()
+            } else {
+              this.addBlock()
+            }
+
             return
           }
+        });
+      },
+      uploadImage() {
+        let uploadProcess = uploadcare.fileFrom('object', this.$refs.imageFile.files[0]);
+        this.loading = true
+
+        uploadProcess.done((fileInfo) => {
+          this.block.image = fileInfo.cdnUrl + fileInfo.name
+          this.addBlock()
+        }).fail((error, fileInfo) => {
+          this.loading = false
+          this.$flash.notify('warning', "Can't upload image. Please try again")
         });
       },
       addBlock() {
