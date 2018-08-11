@@ -47,6 +47,11 @@
       <div class="form-group">
         <label>Image</label>
         <input type="file" class="form-control" ref="imageFile" name="image" accept="image/*">
+        <br>
+        <div v-if="!$lodash.isEmpty(block.image)" style="width:150px;">
+            <img :src="block.image" class="img-fluid" alt=""><br>
+            <a href="#" class="btn btn-sm btn-danger" @click="block.image = ''">Remove</a>
+        </div>
       </div>
       <strong>Other options</strong>
       <div class="form-group">
