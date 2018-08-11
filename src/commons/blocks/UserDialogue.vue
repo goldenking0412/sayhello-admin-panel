@@ -22,13 +22,19 @@
       </div>
     </div>
     <div class="row mb-4" v-if="block.fill_words && block.fill_words.length && block.response">
-        <span class="text-danger" v-if="block.response.viewed_helper_words">
-            Student saw the words for blanks
-        </span>
+        <div class="col-12">
+            <span class="text-danger" v-if="block.response.viewed_helper_words">
+                Student saw the words for blanks in this attempt
+            </span>
 
-        <span class="text-success" v-if="!block.response.viewed_helper_words">
-            Student did not see the words for blanks
-        </span>
+            <span class="text-danger" v-if="block.response.viewed_helper_words_before">
+                Student saw the words for blanks in a <strong>previous attempt</strong>
+            </span>
+
+            <span class="text-success" v-if="!block.response.viewed_helper_words && !block.response.viewed_helper_words_before">
+                Student did not see the words for blanks
+            </span>
+        </div>
     </div>
     <div class="row" v-if="block.sample_response && block.sample_response.audio">
       <div class="col-3 pt-3">
