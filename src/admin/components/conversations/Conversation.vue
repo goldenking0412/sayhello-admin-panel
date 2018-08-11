@@ -201,14 +201,17 @@
         this.$modal.show('learning-nodes.preview')
       },
       updateStatus(status) {
-        this.node.status = status;
+        if (confirm("Are you sure about updating status to " + status)) {
+            this.node.status = status;
 
-        this.axios.post('/v5/admin/learning_nodes/' + this.node.id, { learning_node: this.node })
-          .then((res) => {
-            this.node = res.data;
-          })
-          .catch((err) => {
-          })
+            this.axios.post('/v5/admin/learning_nodes/' + this.node.id, { learning_node: this.node })
+              .then((res) => {
+                this.node = res.data;
+              })
+              .catch((err) => {
+              })
+        }
+        
       }
     }
   }
