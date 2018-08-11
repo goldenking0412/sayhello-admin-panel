@@ -24,7 +24,11 @@
     <div class="row mb-4" v-if="block.fill_words && block.fill_words.length && block.response">
         <div class="col-12">
             <span class="text-danger" v-if="block.response.viewed_helper_words">
-                Student saw the words for blanks in this attempt
+                Student saw the words for blanks <strong>in this attempt</strong>
+            </span>
+
+            <span class="text-danger" v-if="!block.response.viewed_helper_words">
+                SStudent did not see the words for blanks <strong>in this attempt</strong>
             </span>
 
             <span class="text-danger" v-if="block.response.viewed_helper_words_before">
