@@ -25,15 +25,15 @@
         <div class="col-12">
             <span class="text-danger" v-if="block.response.viewed_helper_words">
                 Student saw the words for blanks <strong>in this attempt</strong>
-            </span>
+            </span><br>
 
-            <span class="text-danger" v-if="!block.response.viewed_helper_words">
-                SStudent did not see the words for blanks <strong>in this attempt</strong>
-            </span>
+            <span class="text-success" v-if="!block.response.viewed_helper_words && block.response.viewed_helper_words_before">
+                Student did not see the words for blanks <strong>in this attempt</strong>
+            </span><br>
 
             <span class="text-danger" v-if="block.response.viewed_helper_words_before">
                 Student saw the words for blanks in a <strong>previous attempt</strong>
-            </span>
+            </span><br>
 
             <span class="text-success" v-if="!block.response.viewed_helper_words && !block.response.viewed_helper_words_before">
                 Student did not see the words for blanks
