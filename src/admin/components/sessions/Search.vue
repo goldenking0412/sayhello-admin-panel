@@ -4,11 +4,13 @@
     <div class="row">
       <div class="col-sm-3">
         <div class="form-group">
-          Of learning node
-            <select v-model="search.learning_node_id" class="form-control">
-              <option value="" selected></option>
-              <option v-for="node in learningNodes" :key="node.id" :value="node.id">{{ node.title }}</option>
-            </select>
+          <label class="d-block">
+            Of learning node
+            <button type="button" class="close float-right" aria-label="Close" @click="clearNode()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </label>
+          <input type="text" class="form-control" v-model="selectedNodeTitle" @click.prevent="openLearningNode()">
         </div>
       </div>
       <div class="col-sm-5">
@@ -139,6 +141,7 @@
       </div>
     </section>
     <SessionModal/>
+    <SelectLearningNode v-on:selected="selectedLearningNode" />
   </div>
 </template>
 <script>
@@ -147,6 +150,7 @@
   import VueTagsInput from '@johmun/vue-tags-input'
   import SessionModal from '../students/SessionModal.vue'  
   import TagsAucompleteMixin from '../../../mixins/tags-autocomplete'
+  import SelectLearningNode from './SelectLearningNode.vue'
 
   export default {
     mixins: [TagsAucompleteMixin],
@@ -154,12 +158,12 @@
       DatePicker,
       Paginate,
       SessionModal,
-      VueTagsInput
+      VueTagsInput,
+      SelectLearningNode
     },
     data() {
       return {
         sessions: [],
-        learningNodes: [],
         studentTag: '',
         studentTags: [],
         sessionTag: '',
@@ -167,6 +171,7 @@
         total: 0,
         totalPages: 0,
         evaluators: [],
+        selectedNodeTitle: null,
         search: {
           per_page: 50,
           page: 1,
@@ -214,15 +219,6 @@
 
           })
       },
-      loadLearningNodes() {
-        this.axios.get('/v5/admin/learning_nodes', {params: {per_page: 9999}})
-          .then((res) => {
-            this.learningNodes = res.data.data;
-          })
-          .catch((err) => {
-
-          })
-      },
       changePage(page) {
         if(page && this.search.page != page) {
           this.search.page = page
@@ -245,12 +241,22 @@
           .catch((err) => {
 
           })
+      },
+      openLearningNode() {
+        this.$modal.show('sesions.select-learning-node')
+      },
+      selectedLearningNode(node) {
+        this.search.learning_node_id = node.id
+        this.selectedNodeTitle = node.title
+      },
+      clearNode() {
+        this.search.learning_node_id = null
+        this.selectedNodeTitle = null
       }
     },
     mounted() {
       this.loadEvaluators()
       this.loadSessions()
-      this.loadLearningNodes()
     }
   }
 </script>
