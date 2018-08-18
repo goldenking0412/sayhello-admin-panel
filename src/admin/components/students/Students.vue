@@ -4,22 +4,28 @@
     <hr>
     <h4>Search</h4>
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
           <label for="">Name</label>
           <input type="text" class="form-control" v-model="search.name">
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
           <label for="">Email</label>
           <input type="text" class="form-control" v-model="search.email">
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
           <label for="">Phone</label>
           <input type="text" class="form-control" v-model="search.phone">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="">Messenger ID</label>
+          <input type="text" class="form-control" v-model="search.messenger_id">
         </div>
       </div>
       <div class="col-sm-6">
