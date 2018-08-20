@@ -76,6 +76,9 @@
                 <td>
                   <button class="btn btn-sm btn-primary" @click.prevent="showSession(node.active_session_id)">
                     View
+                  </button>&nbsp;
+                  <button class="btn btn-sm btn-danger" @click.prevent="deleteLn(node.learning_node.id)">
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -108,6 +111,9 @@
                 <td>
                   <button class="btn btn-sm btn-primary" @click.prevent="showSession(node.active_session_id)">
                     View
+                  </button>&nbsp;
+                  <button class="btn btn-sm btn-danger" @click.prevent="deleteLn(node.learning_node.id)">
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -275,6 +281,18 @@
       },
       assignedEvaluator() {
         this.loadStudent()
+      },
+      deleteLn(lnId) {
+        if (confirm('Are you sure about deleting this learning node and its associated data?')) {
+            this.axios.delete('/v5/admin/students/' + this.student.id + '/learning_nodes/' + lnId)
+                .then((res) => {
+                    this.loadLearningNodes();
+                    this.loadPaths();
+                })
+                .catch((err) => {
+                    alert(err.response.data[0]);
+                });
+        }
       },
       addNote() {
         this.$modal.show('students.addNote', this.student)
