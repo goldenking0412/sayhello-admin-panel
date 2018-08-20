@@ -13,7 +13,13 @@
         </div>
       </div>
       <hr>
-      <h3>{{ session.student.name }}</h3>
+      <h3>
+        {{ session.student.name }}
+        <small>
+            <span class="badge badge-primary mr-1" v-for="(tag, index) in session.student.tags" :key="index">{{ tag }}</span>
+            <span class="badge badge-warning" v-if="isPaid">Paid</span>
+        </small>
+        </h3>
       <h4>{{ session.lesson.title }}</h4>
       <div>
           <span class="badge badge-primary mr-1" v-for="(tag, index) in session.lesson.tags" :key="index">{{ tag }}</span>
@@ -118,7 +124,8 @@ export default {
       isRecording: false,
       generalFeedback: {feedback_notes:"", feedback_suggestions:""},
       error: false,
-      isAudioPlaying: false
+      isAudioPlaying: false,
+      isPaid: false
     }
   },
     created() {
@@ -128,6 +135,10 @@ export default {
         .then((res) => {
             this.session = res.data.session
             this.learningObjectives = res.data.session.lesson.evaluatable_objectives
+
+            if (this.$lodash.includes(this.session.student.tags, "type:paid")) {
+                this.isPaid = true;
+            }
 
             this.learningObjectives.forEach((obj) => {
                 if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
