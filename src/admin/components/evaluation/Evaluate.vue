@@ -103,9 +103,9 @@
       <StudentModal />
     </div>
 </template>
+
 <script>
-
-
+import URI from 'urijs'
 import {Howl, Howler} from 'howler'
 import YesNo from './RatingScale/YesNo'
 import MultipleChoice from './RatingScale/MultipleChoice'
@@ -137,19 +137,27 @@ export default {
       isAudioPlaying: false,
       isPaid: false,
       loadingFile: false,
-      skipThisSession: false
+      sessionsToSkip: []
     }
   },
     created() {
         let apiUrl = '/v5/me/lesson_to_evaluate';
         let params = {};
 
-        if (this.$lodash.has(this.$route.query, "skip_session"))
-            params.skip_sessions = [this.$route.query.skip_session];
+        if (this.$lodash.has(this.$route.query, "skip_sessions[]")) {
+            let sessionIds = this.$route.query["skip_sessions[]"];
+
+            if (typeof sessionIds == "string") {
+                sessionIds = [sessionIds];
+            }
+            
+            params.skip_sessions = sessionIds;
+            this.sessionsToSkip = sessionIds;
+        }
 
         this.session = null;
         this.loadingSession = true;
-        console.log(params);
+
         this.axios.get(apiUrl, {params:params})
           .then((res) => {
               this.loadingSession = false;
@@ -179,7 +187,7 @@ export default {
     methods: {
         skipAndLoad() {
             if (confirm("Are you sure about skipping this session?")) {
-                this.skipThisSession = true;
+                this.sessionsToSkip.push(this.session.id);
                 this.reload();
             }
         },
@@ -321,11 +329,10 @@ export default {
         reload() {
             this.stopAudio();
 
-            let url = this.$router.currentRoute.path;
-            if (this.skipThisSession == true) {
-                url += '?skip_session=' + this.session.id;
-            }
-            window.location.href = url;
+
+            let url = URI(this.$router.currentRoute.path);
+            url.addSearch({"skip_sessions[]": this.sessionsToSkip});
+            window.location.href = url.toString();
         }
     }
 }
