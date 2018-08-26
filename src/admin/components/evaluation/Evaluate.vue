@@ -1,15 +1,20 @@
 <template>
   <div>
-    <p class="text-center text-danger" v-if="!session">
+    <p class="text-center text-danger" v-if="!session && !loadingSession">
       No sessions to evaluate
     </p>
+    <p class="text-center text-info" v-if="loadingSession">
+      Looking for a session to evaluate
+    </p>
+    
     <div v-if="session">
       <div class="row">
         <div class="col-6">
           <h2>Evaluate</h2>
         </div>
         <div class="col-6 text-right">
-          <button class="btn btn-primary" @click="viewStudent()">View Student</button>
+          <button class="btn btn-primary" @click="viewStudent()">View Student</button>&nbsp;
+          <button class="btn btn-secondary" @click="skipAndLoad()">Skip</button>
         </div>
       </div>
       <hr>
@@ -73,6 +78,10 @@
                             Stop
                         </button>
                     </div>
+                    <div class="text-center">
+                        or upload an audio file<br>
+                        <input type="file" class="form-control-file" @change="contentFromFile">
+                    </div>
 
                     <hr>
                     <label>Notes on this student</label>
@@ -110,6 +119,7 @@ export default {
   data() {
     return {
       session: null,
+      loadingSession: false,
       evaluation: false,
       noEvaluation: false,
       processing: false,
@@ -125,28 +135,40 @@ export default {
       generalFeedback: {feedback_notes:"", feedback_suggestions:""},
       error: false,
       isAudioPlaying: false,
-      isPaid: false
+      isPaid: false,
+      loadingFile: false,
+      skipThisSession: false
     }
   },
     created() {
-      this.session = null;
+        let apiUrl = '/v5/me/lesson_to_evaluate';
+        let params = {};
 
-      this.axios.get('/v5/me/lesson_to_evaluate')
-        .then((res) => {
-            this.session = res.data.session
-            this.learningObjectives = res.data.session.lesson.evaluatable_objectives
+        if (this.$lodash.has(this.$route.query, "skip_session"))
+            params.skip_sessions = [this.$route.query.skip_session];
 
-            if (this.$lodash.includes(this.session.student.tags, "type:paid")) {
-                this.isPaid = true;
-            }
+        this.session = null;
+        this.loadingSession = true;
+        console.log(params);
+        this.axios.get(apiUrl, {params:params})
+          .then((res) => {
+              this.loadingSession = false;
+              this.session = res.data.session
+              this.learningObjectives = res.data.session.lesson.evaluatable_objectives
 
-            this.learningObjectives.forEach((obj) => {
-                if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
-                    this.hasGeneralFeedback = true;
-                }
+              if (this.$lodash.includes(this.session.student.tags, "type:paid")) {
+                  this.isPaid = true;
+              }
+
+              this.learningObjectives.forEach((obj) => {
+                  if (obj.rating_scale == "Criteria.RatingScale.GeneralFeedback") {
+                      this.hasGeneralFeedback = true;
+                  }
+              });
+            }, (error) => {
+              this.loadingSession = false;
             });
-          }, (error) => {
-          });
+
     },
     components: {
       StarRating,
@@ -155,6 +177,27 @@ export default {
       BlocksContainer, StudentModal
     },
     methods: {
+        skipAndLoad() {
+            if (confirm("Are you sure about skipping this session?")) {
+                this.skipThisSession = true;
+                this.reload();
+            }
+        },
+        contentFromFile(ev) {
+            this.loadingFile = true;
+            const file = ev.target.files[0];
+
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.loadingFile = false;
+                this.recordedAudio = {data:reader.result};
+            };
+            reader.onerror = (error) => {
+                this.loadingFile = false;
+                alert('Error: ', error);
+            };
+        },
         viewStudent() {
             this.$modal.show('students.show', this.session.student.id)
         },
@@ -277,7 +320,12 @@ export default {
         },
         reload() {
             this.stopAudio();
-            this.$router.go(this.$router.currentRoute);
+
+            let url = this.$router.currentRoute.path;
+            if (this.skipThisSession == true) {
+                url += '?skip_session=' + this.session.id;
+            }
+            window.location.href = url;
         }
     }
 }
