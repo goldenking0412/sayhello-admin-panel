@@ -50,6 +50,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('simplemcq-dialogue')">SimpleMCQDialogue</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('web-page')">WebPage</a>
         </div>
@@ -61,6 +62,7 @@
             <div class="text-right">
               <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
               <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
+              <button class="btn btn-light btn-sm" v-else-if="block.type == 'SimpleMCQDialogue'">Multiple Choice Question</button>
               <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
               <button class="btn btn-secondary btn-sm" v-else>Content</button>
             </div>
@@ -90,10 +92,14 @@
 
     <SystemDialogueModal v-on:added-block="addedBlock"/>
     <ContentModal v-on:added-block="addedBlock"/>
+    <SimpleMCQDialogueModal v-on:added-block="addedBlock" ref="simplemcqdialogue"/>
     <WebPageModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
     <AddLearningNodeModal v-on:updated-node="addedBlock"/>
+    <AddAnswerModal v-on:add-answer="addAnswerToSimpleMCQ"/>
     <AddGroup />
+    <AssignLearningNodeToGroupModal />
+    <AddLearningNodeToSimpleMCQ v-on:set-learningNode="setLearningNodeToSimpleMCQ"/>
     <PreviewLearningNodeModal :learningNodeId="node.id"/>
   </div>
 </template>
@@ -101,6 +107,8 @@
 <script>
   import SystemDialogueModal from './SystemDialogueModal.vue'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
+  import SimpleMCQDialogueModal from './SimpleMCQDialogueModal.vue'
+  import AddAnswerModal from './AddAnswerModal.vue'
   import ContentModal from './ContentModal.vue'
   import AddGroup from './AddGroup.vue'
   import WebPageModal from './WebPageModal.vue'
@@ -108,11 +116,13 @@
   import PreviewLearningNodeModal from './PreviewLearningNodeModal.vue'
   import draggable from 'vuedraggable'
   import ConversationGroup from './ConversationGroup.vue'
+  import AssignLearningNodeToGroupModal from './AssignLearningNodeToGroupModal.vue'
+  import AddLearningNodeToSimpleMCQ from './AddLearningNodeToSimpleMCQ.vue'
 
   export default {
     components: {
       SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal,
-      WebPageModal, PreviewLearningNodeModal, AddGroup, ConversationGroup
+      WebPageModal, PreviewLearningNodeModal, AddGroup, ConversationGroup, SimpleMCQDialogueModal, AddAnswerModal, AssignLearningNodeToGroupModal, AddLearningNodeToSimpleMCQ
     },
     data() {
       return {
@@ -145,7 +155,6 @@
         } else {
           this.$modal.show('learning-nodes.create', this.node)
         }
-        
       },
       editBlock(block) {
         let type = 'system-dialogue'
@@ -156,6 +165,9 @@
             break;
           case 'Content':
             type = 'content'
+            break;
+          case 'SimpleMCQDialogue':
+            type = 'simplemcq-dialogue'
             break;
           case 'WebPage':
             type = 'web-page'
@@ -183,6 +195,12 @@
             this.$flash.notify('success', "Can't duplicate node. Please try again")
           })
       },
+      addAnswerToSimpleMCQ(answer) {
+        this.$refs.simplemcqdialogue.addAnswer(answer)
+      },
+      setLearningNodeToSimpleMCQ(learningNode) {
+        this.$refs.simplemcqdialogue.setLearningNode(learningNode)
+      },
       updateBlocks() {
         let blocks = this.node.blocks
         for (let block of blocks) {
@@ -202,14 +220,14 @@
       },
       updateStatus(status) {
         if (confirm("Are you sure about updating status to " + status)) {
-            this.node.status = status;
+          this.node.status = status;
 
-            this.axios.post('/v5/admin/learning_nodes/' + this.node.id, { learning_node: this.node })
-              .then((res) => {
-                this.node = res.data;
-              })
-              .catch((err) => {
-              })
+          this.axios.post('/v5/admin/learning_nodes/' + this.node.id, { learning_node: this.node })
+            .then((res) => {
+              this.node = res.data;
+            })
+            .catch((err) => {
+            })
         }
         
       }
