@@ -62,11 +62,12 @@
             <div class="text-right">
               <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
               <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
-              <button class="btn btn-light btn-sm" v-else-if="block.type == 'SimpleMCQDialogue'">Multiple Choice Question</button>
+              <button class="btn btn-light btn-sm" v-else-if="block.type == 'SimpleMCQ'">Multiple Choice Question</button>
               <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
               <button class="btn btn-secondary btn-sm" v-else>Content</button>
             </div>
-            <h5>{{ block.en ? block.en.text : block.title}}</h5>
+            <h5 v-if="block.type == 'SimpleMCQ'">{{ block.title }}</h5>
+            <h5 v-else>{{ block.en ? block.en.text : block.title}}</h5>
             <div v-if="block.type == 'Content'" v-html="block.content"></div>
             <div v-if="block.type == 'WebPage'" v-html="block.url"></div>
             <div v-else>{{ block.sin ? block.sin.text : ''}}</div>
@@ -166,7 +167,7 @@
           case 'Content':
             type = 'content'
             break;
-          case 'SimpleMCQDialogue':
+          case 'SimpleMCQ':
             type = 'simplemcq-dialogue'
             break;
           case 'WebPage':

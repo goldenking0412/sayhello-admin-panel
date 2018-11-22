@@ -6,11 +6,11 @@
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
         <strong>Question</strong>
-        <vue-ckeditor v-model="block.question" :config="editorOptions"/>
+        <vue-ckeditor v-model="block.question.en" :config="editorOptions"/>
       </div>
       <div class="form-group">
         <strong>Instruction audio</strong>
-        <input type="text" class="form-control" v-model="block.audio" v-validate="'url'" name="audio"
+        <input type="text" class="form-control" v-model="block.instructions.audio" v-validate="'url'" name="audio"
           placeholder="Audio URL">
         <div class="invalid-feedback" v-if="errors.has('audio')" style="display: block;">
           {{ errors.first('audio') }}
@@ -30,28 +30,28 @@
         <strong>When in-correct answer is given</strong>
         <br>
         <div>
-          <input type="radio" v-model="block.options.wrongAnswerGivenCase" name="incorrect" value="continue">Continue
+          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="continue">Continue
           <br>
-          <input type="radio" v-model="block.options.wrongAnswerGivenCase" name="incorrect" value="showExplanation">Show explanation
+          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="showExplanation">Show explanation
           <br>
-          <input type="radio" v-model="block.options.wrongAnswerGivenCase" name="incorrect" value="sendToDiffNode">Send to different learning node
+          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="sendToDiffNode">Send to different learning node
           <br>
-          <div v-show="block.options.wrongAnswerGivenCase === 'continue'">
+          <div v-show="block.on_incorrect_response.next_action === 'continue'">
           </div>
-          <div v-show="block.options.wrongAnswerGivenCase === 'showExplanation'">
+          <div v-show="block.on_incorrect_response.next_action === 'showExplanation'">
             <div class="form-group">
               <strong>Explanation</strong>
-              <vue-ckeditor v-model="block.explanation" :config="editorOptions"/>
+              <vue-ckeditor v-model="block.on_incorrect_response.explanation_content" :config="editorOptions"/>
             </div>
           </div>
-          <div v-show="block.options.wrongAnswerGivenCase === 'sendToDiffNode'">
+          <div v-show="block.on_incorrect_response.next_action === 'sendToDiffNode'">
             <div class="form-group">
               <strong>Different learning Node</strong>
-              <div v-show="block.options.isDifferentLearningNodeSet == false">
+              <div v-show="block.on_incorrect_response.learning_node.id == null">
                 <button class="btn btn-default btn-md" @click.prevent="setLearningNodeModalShow()">Set Learning Node</button>
               </div>
-              <div v-show="block.options.isDifferentLearningNodeSet == true && block.anotherLearningNode_id != null">
-                <span>{{block.anotherLearningNode_title}}</span>
+              <div v-show="block.on_incorrect_response.learning_node.id != null">
+                <span>{{block.on_incorrect_response.learning_node.title}}</span>
                 <button class="btn btn-default btn-md" @click.prevent="setLearningNodeModalShow()">Change</button>
               </div>
             </div>
@@ -66,12 +66,12 @@
       <div class="form-group">
         <div class="listAnswers mt-2" v-if="block" @end="updateAnswers">
           <draggable v-model="block.answers" :options="{draggable:'.item'}">
-            <div class="border item rounded mb-3 p-4" v-for="(answer, index) in block.answers" :key="answer.answer_text">
+            <div class="border item rounded mb-3 p-4" v-for="(answer, index) in block.answers" :key="answer.en">
               <div class="answer-left">
-                <label>{{answer.answer_text}}
-                  <span v-if="answer.sinhala_meaning != '' && answer.sinhala_meaning != null">({{answer.sinhala_meaning}})</span>
+                <label>{{answer.en}}
+                  <span v-if="answer.sin != '' && answer.sin != null">({{answer.sin}})</span>
                 </label>
-                <div class="correct-answer" v-if="answer.isCorrectAnswer === true">
+                <div class="correct-answer" v-if="answer.is_correct === true">
                   <span>Correct Answer</span>
                 </div>
               </div>
@@ -128,21 +128,27 @@
           language: 'en'
         },
         block: {
-          type: 'SimpleMCQDialogue',
-          question: '',
-          title: '',
-          en: {},
-          explanation: '',
+          type: 'SimpleMCQ',
+          instructions: {
+            audio: ''
+          },
+          question: {
+            en: ''
+          },
+          on_incorrect_response: {
+            next_action: 'continue',
+            explanation_content: '',
+            learning_node: {
+              id: '',
+              title: ''
+            }
+          },
+          answers: [],
           options: {
-            isDifferentLearningNodeSet: false,
-            wrongAnswerGivenCase: 'continue',
             automatic_next: false
           },
           evaluatable_objectives: [],
-          answers: [],
-          anotherLearningNode_id: null,
-          anotherLearningNode_title: "",
-          learning_objectives: []
+          title: ''
         }
       }
     },
@@ -201,8 +207,8 @@
         let blocks = this.node.blocks
 
         var tmp = document.createElement("div");
-        tmp.innerHTML = this.block.question;
-        this.block.en.text = tmp.innerText
+        tmp.innerHTML = this.block.question.en;
+        this.block.title = tmp.innerText
 
         let newBlock = {}
         this.block.learning_objectives = this.learningObjectives.map(obj => obj.id)
@@ -246,9 +252,9 @@
         this.block.answers = answers
       },
       setLearningNode(learningNode) {
-        this.block.anotherLearningNode_id = learningNode.id
-        this.block.options.isDifferentLearningNodeSet = true
-        this.block.anotherLearningNode_title = learningNode.title
+        this.block.on_incorrect_response.learning_node.id = learningNode.id
+        this.block.on_incorrect_response.learning_node.title = learningNode.title
+        this.block.on_incorrect_response.next_action = "sendToDiffNode"
       }
     }
   }

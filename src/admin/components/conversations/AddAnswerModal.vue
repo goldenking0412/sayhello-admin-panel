@@ -5,11 +5,11 @@
     <form @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
         <p>Answer</p>
-        <input type="text" class="form-control" v-model="answer.answer_text" name="answer">
+        <input type="text" class="form-control" v-model="answer.en" name="answer">
       </div>
       <div class="form-group">
         <p>Sinhala Meaning</p>
-        <input type="text" class="form-control" v-model="answer.sinhala_meaning" name="sinhala_meaning">
+        <input type="text" class="form-control" v-model="answer.sin" name="sinhala_meaning">
       </div>
       <div class="form-group">
         <p>Audio</p>
@@ -20,7 +20,7 @@
       </div>
       <div class="form-group">
         <label>
-          <input type="checkbox" v-model="answer.isCorrectAnswer">Correct answer
+          <input type="checkbox" v-model="answer.is_correct">Correct answer
         </label>
       </div>
       <div class="text-right">
@@ -43,9 +43,9 @@
       return {
         type: 'AddAnswer',
         answer: {
-          isCorrectAnswer: false,
-          answer_text: '',
-          sinhala_meaning: '',
+          en: '',
+          sin: '',
+          is_correct: false,
           audio: ''
         }
       }
@@ -54,9 +54,9 @@
     },
     methods: {
       beforeOpen(event) {
-        this.answer.isCorrectAnswer = false;
-        this.answer.answer_text = '';
-        this.answer.sinhala_meaning = '';
+        this.answer.is_correct = false;
+        this.answer.en = '';
+        this.answer.sin = '';
         this.answer.audio = '';
       },
       validateBeforeSubmit() {
