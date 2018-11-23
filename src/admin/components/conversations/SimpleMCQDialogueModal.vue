@@ -47,10 +47,10 @@
           <div v-show="block.on_incorrect_response.next_action === 'learning_node'">
             <div class="form-group">
               <strong>Different learning Node</strong>
-              <div v-show="block.on_incorrect_response.learning_node.id == null">
+              <div v-show="block.on_incorrect_response.learning_node.id == ''">
                 <button class="btn btn-default btn-md" @click.prevent="setLearningNodeModalShow()">Set Learning Node</button>
               </div>
-              <div v-show="block.on_incorrect_response.learning_node.id != null">
+              <div v-show="block.on_incorrect_response.learning_node.id != ''">
                 <span>{{block.on_incorrect_response.learning_node.title}}</span>
                 <button class="btn btn-default btn-md" @click.prevent="setLearningNodeModalShow()">Change</button>
               </div>
