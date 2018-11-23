@@ -32,19 +32,19 @@
         <div>
           <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="continue">Continue
           <br>
-          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="showExplanation">Show explanation
+          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="explanation">Show explanation
           <br>
-          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="sendToDiffNode">Send to different learning node
+          <input type="radio" v-model="block.on_incorrect_response.next_action" name="incorrect" value="learning_node">Send to different learning node
           <br>
           <div v-show="block.on_incorrect_response.next_action === 'continue'">
           </div>
-          <div v-show="block.on_incorrect_response.next_action === 'showExplanation'">
+          <div v-show="block.on_incorrect_response.next_action === 'explanation'">
             <div class="form-group">
               <strong>Explanation</strong>
               <vue-ckeditor v-model="block.on_incorrect_response.explanation_content" :config="editorOptions"/>
             </div>
           </div>
-          <div v-show="block.on_incorrect_response.next_action === 'sendToDiffNode'">
+          <div v-show="block.on_incorrect_response.next_action === 'learning_node'">
             <div class="form-group">
               <strong>Different learning Node</strong>
               <div v-show="block.on_incorrect_response.learning_node.id == null">
@@ -254,7 +254,7 @@
       setLearningNode(learningNode) {
         this.block.on_incorrect_response.learning_node.id = learningNode.id
         this.block.on_incorrect_response.learning_node.title = learningNode.title
-        this.block.on_incorrect_response.next_action = "sendToDiffNode"
+        this.block.on_incorrect_response.next_action = "learning_node"
       }
     }
   }
