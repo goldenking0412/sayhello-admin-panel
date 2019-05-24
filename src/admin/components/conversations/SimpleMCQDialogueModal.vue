@@ -104,7 +104,7 @@
 <script>
   import Loading from '../../../commons/Loading.vue'
   import LearningObjectiveMixin from './learning-objective-mixin'
-  import VueCkeditor from 'vue-ckeditor2';
+  import VueCkeditor from 'vue-ckeditor2'
   import AddAnswerModal from './AddAnswerModal.vue'
   import draggable from 'vuedraggable'
 

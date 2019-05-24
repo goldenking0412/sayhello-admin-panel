@@ -45,11 +45,12 @@
 <script>
   import Loading from '../../../commons/Loading.vue'
   import LearningObjectiveMixin from './learning-objective-mixin'
+  import VueCkeditor from 'vue-ckeditor2'
 
   export default {
     mixins: [LearningObjectiveMixin],
     components: {
-      Loading
+      Loading, VueCkeditor
     },
     data() {
       return {

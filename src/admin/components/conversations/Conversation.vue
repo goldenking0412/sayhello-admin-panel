@@ -51,6 +51,7 @@
           <a class="dropdown-item" href="#" @click.prevent="addBlock('system-dialogue')">SystemDialogue</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('user-dialogue')">UserDialogue</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('simplemcq-dialogue')">SimpleMCQDialogue</a>
+          <a class="dropdown-item" href="#" @click.prevent="addBlock('mcqsummarysimple-dialogue')">MCQ Summary Simple</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('content')">Content</a>
           <a class="dropdown-item" href="#" @click.prevent="addBlock('web-page')">WebPage</a>
         </div>
@@ -63,6 +64,7 @@
               <button class="btn btn-warning btn-sm" v-if="block.type == 'SystemDialogue'">System</button>
               <button class="btn btn-primary btn-sm" v-else-if="block.type == 'UserDialogue'">User</button>
               <button class="btn btn-light btn-sm" v-else-if="block.type == 'SimpleMCQ'">Multiple Choice Question</button>
+              <button class="btn btn-light btn-sm" v-else-if="block.type == 'MCQSummarySimple'">MCQ Summary Simple</button>
               <button class="btn btn-danger btn-sm" v-else-if="block.type == 'WebPage'">WebPage</button>
               <button class="btn btn-secondary btn-sm" v-else>Content</button>
             </div>
@@ -94,6 +96,7 @@
     <SystemDialogueModal v-on:added-block="addedBlock"/>
     <ContentModal v-on:added-block="addedBlock"/>
     <SimpleMCQDialogueModal v-on:added-block="addedBlock" ref="simplemcqdialogue"/>
+    <MCQSummarySimple v-on:added-block="addedBlock"/>
     <WebPageModal v-on:added-block="addedBlock"/>
     <UserDialogueModal v-on:added-block="addedBlock"/>
     <AddLearningNodeModal v-on:updated-node="addedBlock"/>
@@ -109,6 +112,7 @@
   import SystemDialogueModal from './SystemDialogueModal.vue'
   import AddLearningNodeModal from './AddLearningNodeModal.vue'
   import SimpleMCQDialogueModal from './SimpleMCQDialogueModal.vue'
+  import MCQSummarySimple from './MCQSummarySimpleModal.vue'
   import AddAnswerModal from './AddAnswerModal.vue'
   import ContentModal from './ContentModal.vue'
   import AddGroup from './AddGroup.vue'
@@ -123,7 +127,7 @@
   export default {
     components: {
       SystemDialogueModal, ContentModal, UserDialogueModal, draggable, AddLearningNodeModal,
-      WebPageModal, PreviewLearningNodeModal, AddGroup, ConversationGroup, SimpleMCQDialogueModal, AddAnswerModal, AssignLearningNodeToGroupModal, AddLearningNodeToSimpleMCQ
+      WebPageModal, PreviewLearningNodeModal, AddGroup, ConversationGroup, SimpleMCQDialogueModal, AddAnswerModal, AssignLearningNodeToGroupModal, AddLearningNodeToSimpleMCQ, MCQSummarySimple
     },
     data() {
       return {
@@ -172,6 +176,9 @@
             break;
           case 'WebPage':
             type = 'web-page'
+            break;
+          case 'MCQSummarySimple':
+            type = 'mcqsummarysimple-dialogue'
             break;
           default:
             break;
