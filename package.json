@@ -14,7 +14,7 @@
     "bugsnag-js": "^4.7.3",
     "bugsnag-vue": "^1.0.1",
     "howler": "^2.0.15",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "recordrtc": "^5.4.8",
     "ua-parser-js": "^0.7.19",
     "urijs": "^1.19.1",
