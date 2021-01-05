@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@johmun/vue-tags-input": "^1.5.10",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bugsnag-js": "^4.7.3",
     "bugsnag-vue": "^1.0.1",
     "howler": "^2.0.15",
